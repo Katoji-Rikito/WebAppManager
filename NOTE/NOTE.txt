@@ -1,0 +1,1 @@
+Scaffold-DbContext "server=localhost;port=3306;database=webappmanager;user=webappmanager;password=webappmanager;" MySql.EntityFrameworkCore -OutputDir Models -f -Verbose
