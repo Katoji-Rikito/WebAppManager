@@ -3,17 +3,20 @@ using System.Collections.Generic;
 
 namespace WebAppManager.Models;
 
-public partial class DsNguontien
+public partial class DsNguontien : BaseEntities
 {
-    public sbyte MaNguonTien { get; set; }
-
-    public string NhomNguonTien { get; set; } = null!;
-
-    public string TenNguonTien { get; set; } = null!;
+    #region Public Properties
 
     public long DonGia { get; set; }
 
-    public long SoLuong { get; set; }
+    /// <summary>
+    /// GUID
+    /// </summary>
+    public string IdNhomTien { get; set; } = null!;
 
-    public DateTime UpdateAt { get; set; }
+    public virtual DmTagnhom IdNhomTienNavigation { get; set; } = null!;
+    public long SoLuong { get; set; }
+    public string TenNguonTien { get; set; } = null!;
+
+    #endregion Public Properties
 }

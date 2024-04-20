@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace WebAppManager.Models;
 
-public partial class DmPass
+public partial class DmPass : BaseEntities
 {
-    public sbyte MaPass { get; set; }
+    #region Public Properties
 
     public string TenPass { get; set; } = null!;
+
+    #endregion Public Properties
 }

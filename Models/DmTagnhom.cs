@@ -3,11 +3,14 @@ using System.Collections.Generic;
 
 namespace WebAppManager.Models;
 
-public partial class DmTagnhom
+public partial class DmTagnhom : BaseEntities
 {
-    public int MaTag { get; set; }
+    #region Public Properties
 
+    public virtual ICollection<DmDiagioihanhchinh> DmDiagioihanhchinhs { get; set; } = new List<DmDiagioihanhchinh>();
+    public virtual ICollection<DsNguontien> DsNguontiens { get; set; } = new List<DsNguontien>();
+    public string? GhiChu { get; set; }
     public string TenTag { get; set; } = null!;
 
-    public string? GhiChu { get; set; }
+    #endregion Public Properties
 }

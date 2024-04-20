@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace WebAppManager.Models;
 
-public partial class DmGiaphong
+public partial class DmGiaphong : BaseEntities
 {
-    public sbyte MaGiaPhong { get; set; }
+    #region Public Properties
 
     public string TenGiaPhong { get; set; } = null!;
+
+    #endregion Public Properties
 }
