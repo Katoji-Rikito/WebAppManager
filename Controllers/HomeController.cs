@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Mysqlx.Resultset;
 using System.Diagnostics;
 using WebAppManager.Models;
 using WebAppManager.Repositories.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAppManager.Controllers
 {
@@ -32,12 +34,11 @@ namespace WebAppManager.Controllers
         {
             try
             {
-                DmGiaphong record = new DmGiaphong()
-                {
-                    TenGiaPhong = "100k/2h",
-                };
+                DmGiaphong record = new DmGiaphong();
+                record.TenGiaPhong = "100k/2h";
                 record = await _dmGiaphongRepo.CreateAsync(record);
-                return await Task.Run(() => Ok(record));
+
+                return await Task.Run(async () => Ok(new { rowAffected = await _dmGiaphongRepo.SaveChangesAsync(), data = record }));
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
@@ -52,9 +53,8 @@ namespace WebAppManager.Controllers
         {
             try
             {
-                var temp = await _dmGiaphongRepo.GetListAsync();
-                temp = null;
-                return await Task.Run(() => Ok(temp));
+                var listResult = await _dmGiaphongRepo.GetListAsync();
+                return await Task.Run(() => Ok(new { data = listResult }));
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }

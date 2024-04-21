@@ -236,6 +236,19 @@ namespace WebAppManager.Repositories
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        /// <summary>
+        /// Lưu dữ liệu vào CSDL
+        /// </summary>
+        /// <returns>Số bản ghi được lưu</returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<int> SaveChangesAsync()
+        {
+            try
+            {
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
         #endregion Public Methods
     }
 }
