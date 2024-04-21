@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebAppManager.Models;
 
 namespace WebAppManager.Controllers
@@ -20,14 +19,5 @@ namespace WebAppManager.Controllers
         }
 
         #endregion Public Constructors
-
-
-
-        #region Public Methods
-
-        #endregion Public Methods
-
-
-
     }
 }

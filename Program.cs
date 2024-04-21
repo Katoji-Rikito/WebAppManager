@@ -1,10 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAppManager.Models;
+using WebAppManager.Repositories;
+using WebAppManager.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Thêm Scoped của GenericRepository
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 // Thêm kết nối đến cơ sở dữ liệu MariaDB
 string WebAppManagerDB = builder.Configuration.GetConnectionString("WebAppManagerConnection") ?? string.Empty;

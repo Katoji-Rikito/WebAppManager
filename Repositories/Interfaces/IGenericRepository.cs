@@ -7,17 +7,17 @@ namespace WebAppManager.Repositories.Interfaces
     {
         #region Public Methods
 
-        public Task CreateAsync(TEntity entityData);
+        public Task<TEntity> CreateAsync(TEntity entityData);
 
-        public Task CreateMultiAsync(List<TEntity> entityDatas);
+        public Task<IEnumerable<TEntity>> CreateMultiAsync(List<TEntity> entityDatas);
 
-        public Task DangerDeleteAsync(TEntity entityData);
+        public Task<TEntity> DangerDeleteAsync(TEntity entityData);
 
-        public Task DangerDeleteMultiAsync(List<TEntity> entityDatas);
+        public Task<IEnumerable<TEntity>> DangerDeleteMultiAsync(List<TEntity> entityDatas);
 
-        public Task DeleteAsync(TEntity entityData);
+        public Task<TEntity> DeleteAsync(TEntity entityData);
 
-        public Task DeleteMultiAsync(List<TEntity> entityDatas);
+        public Task<IEnumerable<TEntity>> DeleteMultiAsync(List<TEntity> entityDatas);
 
         public Task<TEntity?> GetByIdAsync(string id);
 
@@ -25,9 +25,11 @@ namespace WebAppManager.Repositories.Interfaces
 
         public Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>>? filter = null);
 
-        public Task UpdateAsync(TEntity entityData);
+        public Task<bool> IsRecordExists(Expression<Func<TEntity, bool>> filter);
 
-        public Task UpdateMultiAsync(List<TEntity> entityDatas);
+        public Task<TEntity> UpdateAsync(TEntity entityData);
+
+        public Task<IEnumerable<TEntity>> UpdateMultiAsync(List<TEntity> entityDatas);
 
         #endregion Public Methods
     }
