@@ -165,7 +165,6 @@ CREATE TABLE `ds_taikhoan` (
 --
 ALTER TABLE `dm_diagioihanhchinh`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD UNIQUE KEY `TenDiaGioi` (`TenDiaGioi`) USING HASH,
   ADD KEY `FK_DMDiaGioiHanhChinh_DMDiaGioiHanhChinh` (`IdCapTren`),
   ADD KEY `FK_DMDiaGioiHanhChinh_DMTagNhom` (`IdNhomCap`);
@@ -175,7 +174,6 @@ ALTER TABLE `dm_diagioihanhchinh`
 --
 ALTER TABLE `dm_giaphong`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD UNIQUE KEY `TenGiaPhong` (`TenGiaPhong`) USING HASH;
 
 --
@@ -183,7 +181,6 @@ ALTER TABLE `dm_giaphong`
 --
 ALTER TABLE `dm_khoanchi`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD UNIQUE KEY `TenKhoanChi` (`TenKhoanChi`) USING HASH;
 
 --
@@ -191,7 +188,6 @@ ALTER TABLE `dm_khoanchi`
 --
 ALTER TABLE `dm_pass`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD UNIQUE KEY `TenPass` (`TenPass`) USING HASH;
 
 --
@@ -199,7 +195,6 @@ ALTER TABLE `dm_pass`
 --
 ALTER TABLE `dm_tagnhom`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD UNIQUE KEY `TenTag` (`TenTag`) USING HASH;
 
 --
@@ -207,7 +202,6 @@ ALTER TABLE `dm_tagnhom`
 --
 ALTER TABLE `ds_chitieu`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD KEY `FK_DSChiTieu_DMKhoanChi` (`IdKhoanChi`);
 
 --
@@ -215,7 +209,6 @@ ALTER TABLE `ds_chitieu`
 --
 ALTER TABLE `ds_diachi`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD KEY `FK_DSDiaChi_DMDiaGioiHanhChinh` (`IdDiaGioi`);
 
 --
@@ -223,7 +216,6 @@ ALTER TABLE `ds_diachi`
 --
 ALTER TABLE `ds_nguontien`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD UNIQUE KEY `TenNguonTien` (`TenNguonTien`) USING HASH,
   ADD KEY `FK_DSNguonTien_DMTagNhom` (`IdNhomTien`);
 
@@ -232,7 +224,6 @@ ALTER TABLE `ds_nguontien`
 --
 ALTER TABLE `ds_taikhoan`
   ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `ID` (`ID`),
   ADD UNIQUE KEY `TenDangNhap` (`TenDangNhap`) USING HASH;
 
 --

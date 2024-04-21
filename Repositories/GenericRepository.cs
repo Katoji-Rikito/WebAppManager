@@ -56,7 +56,8 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                entityDatas.ForEach(record => {
+                entityDatas.ForEach(record =>
+                {
                     record.IsActive = true;
                     record.UpdatedAt = DateTime.Now;
                 });
@@ -126,7 +127,8 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                entityDatas.ForEach(record => {
+                entityDatas.ForEach(record =>
+                {
                     record.IsActive = false;
                     record.UpdatedAt = DateTime.Now;
                 });

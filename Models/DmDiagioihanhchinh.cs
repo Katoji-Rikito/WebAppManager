@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WebAppManager.Models;
+﻿namespace WebAppManager.Models;
 
 public partial class DmDiagioihanhchinh : BaseEntities
 {
     #region Public Properties
 
     public virtual ICollection<DsDiachi> DsDiachis { get; set; } = new List<DsDiachi>();
-
-    /// <summary>
-    /// GUID
-    /// </summary>
-    public string? IdCapTren { get; set; }
+    public long? IdCapTren { get; set; }
 
     public virtual DmDiagioihanhchinh? IdCapTrenNavigation { get; set; }
-
-    /// <summary>
-    /// GUID
-    /// </summary>
-    public string IdNhomCap { get; set; } = null!;
+    public long IdNhomCap { get; set; }
 
     public virtual DmTagnhom IdNhomCapNavigation { get; set; } = null!;
     public virtual ICollection<DmDiagioihanhchinh> InverseIdCapTrenNavigation { get; set; } = new List<DmDiagioihanhchinh>();

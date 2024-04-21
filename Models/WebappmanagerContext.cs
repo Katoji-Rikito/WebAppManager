@@ -36,21 +36,15 @@ public partial class WebappmanagerContext : DbContext
 
             entity.HasIndex(e => e.IdNhomCap, "FK_DMDiaGioiHanhChinh_DMTagNhom");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.HasIndex(e => e.TenDiaGioi, "TenDiaGioi").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.IdCapTren)
-                .HasMaxLength(32)
                 .HasDefaultValueSql("'NULL'")
-                .HasComment("GUID");
-            entity.Property(e => e.IdNhomCap)
-                .HasMaxLength(32)
-                .HasComment("GUID");
+                .HasColumnType("bigint(20) unsigned");
+            entity.Property(e => e.IdNhomCap).HasColumnType("bigint(20) unsigned");
             entity.Property(e => e.TenCap)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("tinytext");
@@ -74,13 +68,10 @@ public partial class WebappmanagerContext : DbContext
 
             entity.ToTable("dm_giaphong");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.HasIndex(e => e.TenGiaPhong, "TenGiaPhong").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.TenGiaPhong).HasColumnType("tinytext");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
@@ -92,13 +83,10 @@ public partial class WebappmanagerContext : DbContext
 
             entity.ToTable("dm_khoanchi");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.HasIndex(e => e.TenKhoanChi, "TenKhoanChi").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.DiaChi)
                 .HasDefaultValueSql("'NULL'")
@@ -114,13 +102,10 @@ public partial class WebappmanagerContext : DbContext
 
             entity.ToTable("dm_pass");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.HasIndex(e => e.TenPass, "TenPass").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.TenPass).HasColumnType("tinytext");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
@@ -132,13 +117,10 @@ public partial class WebappmanagerContext : DbContext
 
             entity.ToTable("dm_tagnhom");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.HasIndex(e => e.TenTag, "TenTag").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.GhiChu)
                 .HasDefaultValueSql("'NULL'")
@@ -155,19 +137,14 @@ public partial class WebappmanagerContext : DbContext
 
             entity.HasIndex(e => e.IdKhoanChi, "FK_DSChiTieu_DMKhoanChi");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.DonGia).HasColumnType("bigint(20) unsigned");
             entity.Property(e => e.GhiChu)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("text");
-            entity.Property(e => e.IdKhoanChi)
-                .HasMaxLength(32)
-                .HasComment("GUID");
+            entity.Property(e => e.IdKhoanChi).HasColumnType("bigint(20) unsigned");
             entity.Property(e => e.NgayThang).HasColumnType("date");
             entity.Property(e => e.SoLuong).HasColumnType("tinyint(3) unsigned");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
@@ -186,19 +163,14 @@ public partial class WebappmanagerContext : DbContext
 
             entity.HasIndex(e => e.IdDiaGioi, "FK_DSDiaChi_DMDiaGioiHanhChinh");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.DiaChiChiTiet).HasColumnType("text");
             entity.Property(e => e.GhiChu)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("text");
-            entity.Property(e => e.IdDiaGioi)
-                .HasMaxLength(32)
-                .HasComment("GUID");
+            entity.Property(e => e.IdDiaGioi).HasColumnType("bigint(20) unsigned");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.IdDiaGioiNavigation).WithMany(p => p.DsDiachis)
@@ -215,18 +187,13 @@ public partial class WebappmanagerContext : DbContext
 
             entity.HasIndex(e => e.IdNhomTien, "FK_DSNguonTien_DMTagNhom");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.HasIndex(e => e.TenNguonTien, "TenNguonTien").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.DonGia).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.IdNhomTien)
-                .HasMaxLength(32)
-                .HasComment("GUID");
+            entity.Property(e => e.IdNhomTien).HasColumnType("bigint(20) unsigned");
             entity.Property(e => e.SoLuong).HasColumnType("bigint(20) unsigned");
             entity.Property(e => e.TenNguonTien).HasColumnType("tinytext");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
@@ -243,13 +210,10 @@ public partial class WebappmanagerContext : DbContext
 
             entity.ToTable("ds_taikhoan");
 
-            entity.HasIndex(e => e.Id, "ID").IsUnique();
-
             entity.HasIndex(e => e.TenDangNhap, "TenDangNhap").IsUnique();
 
             entity.Property(e => e.Id)
-                .HasMaxLength(32)
-                .HasComment("GUID")
+                .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
             entity.Property(e => e.HashSalt).HasColumnType("tinytext");
             entity.Property(e => e.MatKhau).HasColumnType("text");

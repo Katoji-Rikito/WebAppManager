@@ -4,10 +4,7 @@
     {
         #region Public Properties
 
-        /// <summary>
-        /// GUID
-        /// </summary>
-        public string Id { get; set; } = null!;
+        public long Id { get; set; }
 
         public bool IsActive { get; set; }
 

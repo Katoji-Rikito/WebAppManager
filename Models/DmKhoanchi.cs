@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WebAppManager.Models;
+﻿namespace WebAppManager.Models;
 
 public partial class DmKhoanchi : BaseEntities
 {

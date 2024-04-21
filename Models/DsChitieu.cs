@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WebAppManager.Models;
+﻿namespace WebAppManager.Models;
 
 public partial class DsChitieu : BaseEntities
 {
     #region Public Properties
 
     public long DonGia { get; set; }
-
     public string? GhiChu { get; set; }
-
-    /// <summary>
-    /// GUID
-    /// </summary>
-    public string IdKhoanChi { get; set; } = null!;
+    public long IdKhoanChi { get; set; }
 
     public virtual DmKhoanchi IdKhoanChiNavigation { get; set; } = null!;
     public bool LaKhoanNhan { get; set; }

@@ -9,8 +9,8 @@ namespace WebAppManager.Controllers
     {
         #region Private Fields
 
-        private readonly ILogger<HomeController> _logger;
         private readonly IGenericRepository<DmGiaphong> _dmGiaphongRepo;
+        private readonly ILogger<HomeController> _logger;
 
         #endregion Private Fields
 
@@ -22,12 +22,25 @@ namespace WebAppManager.Controllers
             _dmGiaphongRepo = dmGiaphongRepo;
         }
 
-
         #endregion Public Constructors
 
 
 
         #region Public Methods
+
+        public async Task<IActionResult> Create()
+        {
+            try
+            {
+                DmGiaphong record = new DmGiaphong()
+                {
+                    TenGiaPhong = "100k/2h",
+                };
+                record = await _dmGiaphongRepo.CreateAsync(record);
+                return await Task.Run(() => Ok(record));
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -42,19 +55,6 @@ namespace WebAppManager.Controllers
                 var temp = await _dmGiaphongRepo.GetListAsync();
                 temp = null;
                 return await Task.Run(() => Ok(temp));
-            }
-            catch (Exception ex) { return BadRequest(ex.Message); }
-        }
-
-        public async Task<IActionResult> Create()
-        {
-            try
-            {
-                DmGiaphong record = new DmGiaphong() {
-                    TenGiaPhong = "100k/2h",
-                };
-                record = await _dmGiaphongRepo.CreateAsync(record);
-                return await Task.Run(() => Ok(record));
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
