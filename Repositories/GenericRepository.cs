@@ -56,6 +56,10 @@ namespace WebAppManager.Repositories
         {
             try
             {
+                entityDatas.ForEach(record => {
+                    record.IsActive = true;
+                    record.UpdatedAt = DateTime.Now;
+                });
                 await _dbSetEntity.AddRangeAsync(entityDatas);
                 return entityDatas;
             }
@@ -104,6 +108,8 @@ namespace WebAppManager.Repositories
         {
             try
             {
+                entityData.IsActive = false;
+                entityData.UpdatedAt = DateTime.Now;
                 await Task.Run(() => _dbSetEntity.Update(entityData));
                 return entityData;
             }
@@ -120,6 +126,10 @@ namespace WebAppManager.Repositories
         {
             try
             {
+                entityDatas.ForEach(record => {
+                    record.IsActive = false;
+                    record.UpdatedAt = DateTime.Now;
+                });
                 await Task.Run(() => _dbSetEntity.UpdateRange(entityDatas));
                 return entityDatas;
             }
@@ -200,6 +210,7 @@ namespace WebAppManager.Repositories
         {
             try
             {
+                entityData.UpdatedAt = DateTime.Now;
                 await Task.Run(() => _dbSetEntity.Update(entityData));
                 return entityData;
             }
@@ -216,6 +227,7 @@ namespace WebAppManager.Repositories
         {
             try
             {
+                entityDatas.ForEach(record => record.UpdatedAt = DateTime.Now);
                 await Task.Run(() => _dbSetEntity.UpdateRange(entityDatas));
                 return entityDatas;
             }
