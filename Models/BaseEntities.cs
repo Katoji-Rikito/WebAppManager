@@ -9,6 +9,8 @@
         /// </summary>
         public string Id { get; set; } = null!;
 
+        public bool IsActive { get; set; }
+
         public DateTime UpdatedAt { get; set; }
 
         #endregion Public Properties

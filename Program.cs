@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Thêm kết nối đến cơ sở dữ liệu MariaDB
-string WebAppManagerDB = builder.Configuration.GetConnectionString("WebAppManagerConnection") ?? throw new InvalidOperationException("Không tìm thấy chuỗi kết nối tới cơ sở dữ liệu!");
+string WebAppManagerDB = builder.Configuration.GetConnectionString("WebAppManagerConnection") ?? string.Empty;
 builder.Services.AddDbContext<WebappmanagerContext>(options =>
 {
     try { options.UseMySql(WebAppManagerDB, ServerVersion.AutoDetect(WebAppManagerDB)); }
