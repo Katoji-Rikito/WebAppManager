@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -33,7 +36,7 @@
                 <ul id="SubMenuApp" class="dropdown-menu bg-dark overflow-auto" aria-labelledby="MenuApp">
                     <li><h5 class="dropdown-header">Dropdown header 1</h5></li>
                     <li>
-                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                     </li>
                     <li class="dropdown-divider"></li>
                     <li><h5 class="dropdown-header">Dropdown header 1</h5></li>

@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Mysqlx.Resultset;
 using System.Diagnostics;
 using WebAppManager.Models;
 using WebAppManager.Repositories.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAppManager.Controllers
 {
