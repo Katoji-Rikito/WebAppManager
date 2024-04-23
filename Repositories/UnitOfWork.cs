@@ -4,18 +4,18 @@ using WebAppManager.Repositories.Interfaces;
 
 namespace WebAppManager.Repositories
 {
-    public class UnitOfWork(WebappmanagerContext context) : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         #region Private Fields
 
-        private readonly WebappmanagerContext _context = context;
+        private readonly WebappmanagerContext _context;
         private readonly Dictionary<Type, object> _repoDict = new Dictionary<Type, object>();
         private IDbContextTransaction? _transaction;
         private bool disposed = false;
 
         #endregion Private Fields
 
-
+        public UnitOfWork(WebappmanagerContext context) { _context = context; }
 
         #region Public Methods
 
@@ -35,16 +35,24 @@ namespace WebAppManager.Repositories
         /// <exception cref="Exception"> </exception>
         public async Task CommitAsync()
         {
-            try { await _transaction!.CommitAsync(); }
+            try
+            {
+                if (_transaction is not null)
+                    await _transaction.CommitAsync();
+            }
             catch (Exception ex)
             {
-                await _transaction!.RollbackAsync();
+                if (_transaction is not null)
+                    await _transaction.RollbackAsync();
                 throw new Exception(ex.Message);
             }
             finally
             {
-                await _transaction!.DisposeAsync();
-                _transaction = null!;
+                if (_transaction is not null)
+                {
+                    await _transaction.DisposeAsync();
+                    _transaction = null;
+                }
             }
         }
 
@@ -57,11 +65,11 @@ namespace WebAppManager.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public IGenericRepository<TUOWEntity>? GetRepository<TUOWEntity>() where TUOWEntity : BaseEntities
+        public IGenericRepository<TEntity>? GetRepository<TEntity>() where TEntity : BaseEntities
         {
-            if (_repoDict.ContainsKey(typeof(TUOWEntity))) { return _repoDict[typeof(TUOWEntity)] as IGenericRepository<TUOWEntity>; }
-            var repo = new GenericRepository<TUOWEntity>(_context);
-            _repoDict.Add(typeof(TUOWEntity), repo);
+            if (_repoDict.ContainsKey(typeof(TEntity))) { return _repoDict[typeof(TEntity)] as IGenericRepository<TEntity>; }
+            var repo = new GenericRepository<TEntity>(_context);
+            _repoDict.Add(typeof(TEntity), repo);
             return repo;
         }
 

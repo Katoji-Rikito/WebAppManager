@@ -30,6 +30,7 @@ namespace WebAppManager.Repositories.Interfaces
         public Task<TEntity> UpdateAsync(TEntity entityData);
 
         public Task<IEnumerable<TEntity>> UpdateMultiAsync(List<TEntity> entityDatas);
+
         public Task<int> SaveChangesAsync();
         #endregion Public Methods
     }

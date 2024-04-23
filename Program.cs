@@ -1,19 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WebAppManager.Models;
 using WebAppManager.Repositories;
 using WebAppManager.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services and language to the container.
-builder.Services
-    .AddControllersWithViews()
-    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-    .AddDataAnnotationsLocalization();
-
-// Thêm ngôn ngữ
-builder.Services.AddLocalization(options=>options.ResourcesPath = "Languages");
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 // Thêm Scoped của GenericRepository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -28,20 +21,12 @@ builder.Services.AddDbContext<WebappmanagerContext>(options =>
 
 var app = builder.Build();
 
-// Thêm middleware ngôn ngữ
-// Hiện hỗ trợ tiếng Việt (ưu tiên) và tiếng Anh
-var supportedCultures = new[] { "vi-VN", "en-US" };
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture(supportedCultures[0])
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
-app.UseRequestLocalization(localizationOptions);
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();
