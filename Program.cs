@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 
 // Thêm Scoped của GenericRepository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Thêm kết nối đến cơ sở dữ liệu MariaDB
 string WebAppManagerDB = builder.Configuration.GetConnectionString("WebAppManagerConnection") ?? string.Empty;

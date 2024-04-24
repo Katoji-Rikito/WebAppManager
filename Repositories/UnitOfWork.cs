@@ -10,12 +10,19 @@ namespace WebAppManager.Repositories
 
         private readonly WebappmanagerContext _context;
         private readonly Dictionary<Type, object> _repoDict = new Dictionary<Type, object>();
-        private IDbContextTransaction? _transaction;
+        private IDbContextTransaction _transaction = null!;
         private bool disposed = false;
 
         #endregion Private Fields
 
-        public UnitOfWork(WebappmanagerContext context) { _context = context; }
+        #region Public Constructors
+
+        public UnitOfWork(WebappmanagerContext context)
+        { _context = context; }
+
+        #endregion Public Constructors
+
+
 
         #region Public Methods
 
@@ -25,7 +32,8 @@ namespace WebAppManager.Repositories
         /// <returns> </returns>
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            try { _transaction = await _context.Database.BeginTransactionAsync(); }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
         /// <summary>
@@ -37,8 +45,8 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                if (_transaction is not null)
-                    await _transaction.CommitAsync();
+                if (_transaction is null) throw new Exception(CommonMessages.TransactionIsNull);
+                await _transaction.CommitAsync();
             }
             catch (Exception ex)
             {
@@ -51,7 +59,7 @@ namespace WebAppManager.Repositories
                 if (_transaction is not null)
                 {
                     await _transaction.DisposeAsync();
-                    _transaction = null;
+                    _transaction = null!;
                 }
             }
         }
@@ -61,16 +69,35 @@ namespace WebAppManager.Repositories
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            try
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
-        public IGenericRepository<TEntity>? GetRepository<TEntity>() where TEntity : BaseEntities
+        /// <summary>
+        /// Lấy repository cần xử lý
+        /// </summary>
+        /// <typeparam name="TEntity"> Entity cần xử lý </typeparam>
+        /// <returns> Repository của entity cần xử lý </returns>
+        public IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntities
         {
-            if (_repoDict.ContainsKey(typeof(TEntity))) { return _repoDict[typeof(TEntity)] as IGenericRepository<TEntity>; }
-            var repo = new GenericRepository<TEntity>(_context);
-            _repoDict.Add(typeof(TEntity), repo);
-            return repo;
+            try
+            {
+                if (_repoDict.ContainsKey(typeof(TEntity)))
+                {
+                    var repoDict = _repoDict[typeof(TEntity)] as IGenericRepository<TEntity>;
+                    if (repoDict is not null)
+                        return repoDict;
+                }
+
+                var repo = new GenericRepository<TEntity>(_context);
+                _repoDict.Add(typeof(TEntity), repo);
+                return repo;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
         /// <summary>
@@ -79,9 +106,14 @@ namespace WebAppManager.Repositories
         /// <returns> </returns>
         public async Task RollbackAsync()
         {
-            await _transaction!.RollbackAsync();
-            await _transaction!.DisposeAsync();
-            _transaction = null!;
+            try
+            {
+                if (_transaction is null) throw new Exception(CommonMessages.TransactionIsNull);
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+            finally { if (_transaction is not null) _transaction = null!; }
         }
 
         /// <summary>
@@ -90,7 +122,8 @@ namespace WebAppManager.Repositories
         /// <returns> Số dòng được lưu vào CSDL </returns>
         public async Task<int> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync();
+            try { return await _context.SaveChangesAsync(); }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
         #endregion Public Methods
@@ -106,8 +139,12 @@ namespace WebAppManager.Repositories
         /// <returns> </returns>
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed && disposing) _context.Dispose();
-            this.disposed = true;
+            try
+            {
+                if (!this.disposed && disposing) _context.Dispose();
+                this.disposed = true;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
         #endregion Protected Methods

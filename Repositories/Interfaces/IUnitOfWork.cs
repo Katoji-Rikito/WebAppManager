@@ -10,7 +10,7 @@ namespace WebAppManager.Repositories.Interfaces
 
         public Task CommitAsync();
 
-        public IGenericRepository<TEntity>? GetRepository<TEntity>() where TEntity : BaseEntities;
+        public IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntities;
 
         public Task RollbackAsync();
 

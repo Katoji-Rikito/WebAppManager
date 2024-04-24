@@ -9,17 +9,17 @@ namespace WebAppManager.Controllers
     {
         #region Private Fields
 
-        private readonly IGenericRepository<DmGiaphong> _dmGiaphongRepo;
         private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public HomeController(ILogger<HomeController> logger, IGenericRepository<DmGiaphong> dmGiaphongRepo)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
-            _dmGiaphongRepo = dmGiaphongRepo;
+            _unitOfWork = unitOfWork;
         }
 
         #endregion Public Constructors
@@ -32,13 +32,22 @@ namespace WebAppManager.Controllers
         {
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 DmGiaphong record = new DmGiaphong();
-                record.TenGiaPhong = "100k/2h";
-                record = await _dmGiaphongRepo.CreateAsync(record);
+                record.TenGiaPhong = "120k/2h";
+                record = await _unitOfWork.GetRepository<DmGiaphong>().CreateAsync(record);
 
-                return await Task.Run(async () => Ok(new { rowAffected = await _dmGiaphongRepo.SaveChangesAsync(), data = record }));
+                int rowsResult = await _unitOfWork.SaveChangesAsync();
+
+                await _unitOfWork.CommitAsync();
+
+                return await Task.Run(() => Ok(new { rowAffected = rowsResult, data = record }));
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                return BadRequest(ex.Message);
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -51,7 +60,8 @@ namespace WebAppManager.Controllers
         {
             try
             {
-                var listResult = await _dmGiaphongRepo.GetListAsync();
+                var listResult = await _unitOfWork.GetRepository<DmGiaphong>().GetListAsync();
+                var listResult2 = await _unitOfWork.GetRepository<DsNguontien>().GetListAsync();
                 return await Task.Run(() => Ok(new { data = listResult }));
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
