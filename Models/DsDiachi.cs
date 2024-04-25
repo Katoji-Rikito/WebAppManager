@@ -1,13 +1,21 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DsDiachi : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DsDiachi
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
-    public string DiaChiChiTiet { get; set; } = null!;
+    public ulong IdDiaGioi { get; set; }
+
+    public string? DiaChiChiTiet { get; set; }
+
     public string? GhiChu { get; set; }
-    public long IdDiaGioi { get; set; }
-    public virtual DmDiagioihanhchinh IdDiaGioiNavigation { get; set; } = null!;
 
-    #endregion Public Properties
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual DmDiagioihanhchinh IdDiaGioiNavigation { get; set; } = null!;
 }

@@ -1,13 +1,21 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DmTagnhom : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DmTagnhom
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
-    public virtual ICollection<DmDiagioihanhchinh> DmDiagioihanhchinhs { get; set; } = new List<DmDiagioihanhchinh>();
-    public virtual ICollection<DsNguontien> DsNguontiens { get; set; } = new List<DsNguontien>();
-    public string? GhiChu { get; set; }
     public string TenTag { get; set; } = null!;
 
-    #endregion Public Properties
+    public string? GhiChu { get; set; }
+
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual ICollection<DmDiagioihanhchinh> DmDiagioihanhchinhs { get; set; } = new List<DmDiagioihanhchinh>();
+
+    public virtual ICollection<DsNguontien> DsNguontiens { get; set; } = new List<DsNguontien>();
 }

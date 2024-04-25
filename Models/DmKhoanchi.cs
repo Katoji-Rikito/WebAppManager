@@ -1,13 +1,21 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DmKhoanchi : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DmKhoanchi
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
-    public string? DiaChi { get; set; }
-    public string DonViTinh { get; set; } = null!;
-    public virtual ICollection<DsChitieu> DsChitieus { get; set; } = new List<DsChitieu>();
     public string TenKhoanChi { get; set; } = null!;
 
-    #endregion Public Properties
+    public string DonViTinh { get; set; } = null!;
+
+    public string? DiaChi { get; set; }
+
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual ICollection<DsChitieu> DsChitieus { get; set; } = new List<DsChitieu>();
 }

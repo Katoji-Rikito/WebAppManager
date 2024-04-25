@@ -1,20 +1,29 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DmDiagioihanhchinh : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DmDiagioihanhchinh
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
-    public virtual ICollection<DsDiachi> DsDiachis { get; set; } = new List<DsDiachi>();
-    public long? IdCapTren { get; set; }
+    public ulong? IdCapTren { get; set; }
 
-    public virtual DmDiagioihanhchinh? IdCapTrenNavigation { get; set; }
-    public long IdNhomCap { get; set; }
+    public ulong IdNhomCap { get; set; }
 
-    public virtual DmTagnhom IdNhomCapNavigation { get; set; } = null!;
-    public virtual ICollection<DmDiagioihanhchinh> InverseIdCapTrenNavigation { get; set; } = new List<DmDiagioihanhchinh>();
     public string? TenCap { get; set; }
 
     public string TenDiaGioi { get; set; } = null!;
 
-    #endregion Public Properties
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual ICollection<DsDiachi> DsDiachis { get; set; } = new List<DsDiachi>();
+
+    public virtual DmDiagioihanhchinh? IdCapTrenNavigation { get; set; }
+
+    public virtual DmTagnhom IdNhomCapNavigation { get; set; } = null!;
+
+    public virtual ICollection<DmDiagioihanhchinh> InverseIdCapTrenNavigation { get; set; } = new List<DmDiagioihanhchinh>();
 }

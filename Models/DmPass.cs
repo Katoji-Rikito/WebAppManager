@@ -1,10 +1,15 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DmPass : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DmPass
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
     public string TenPass { get; set; } = null!;
 
-    #endregion Public Properties
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
 }

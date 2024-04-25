@@ -1,10 +1,15 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DmGiaphong : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DmGiaphong
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
     public string TenGiaPhong { get; set; } = null!;
 
-    #endregion Public Properties
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
 }

@@ -146,10 +146,7 @@ namespace WebAppManager.Repositories
         /// <exception cref="Exception"> </exception>
         public async Task<TEntity?> GetByIdAsync(string id)
         {
-            try
-            {
-                return await _dbSetEntity.FindAsync(id);
-            }
+            try { return await _dbSetEntity.FindAsync(id); }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 

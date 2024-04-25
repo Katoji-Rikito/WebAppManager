@@ -1,293 +1,160 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 21, 2024 lúc 06:56 PM
--- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.2.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+07:00";
-
+-- --------------------------------------------------------
+-- Máy chủ:                      127.0.0.1
+-- Server version:               11.5.0-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Phiên bản:           12.6.0.6765
+-- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Cơ sở dữ liệu: `webappmanager`
---
 
--- --------------------------------------------------------
+-- Dumping database structure for webappmanager
+CREATE DATABASE IF NOT EXISTS `webappmanager` /*!40100 DEFAULT CHARACTER SET utf32 COLLATE utf32_vietnamese_ci */;
+USE `webappmanager`;
 
---
--- Cấu trúc bảng cho bảng `dm_diagioihanhchinh`
---
-
-CREATE TABLE `dm_diagioihanhchinh` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
-  `IdCapTren` bigint(20) UNSIGNED DEFAULT NULL,
-  `IdNhomCap` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.dm_diagioihanhchinh
+CREATE TABLE IF NOT EXISTS `dm_diagioihanhchinh` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `IdCapTren` bigint(20) unsigned DEFAULT NULL,
+  `IdNhomCap` bigint(20) unsigned NOT NULL,
   `TenCap` tinytext DEFAULT NULL,
   `TenDiaGioi` tinytext NOT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TenDiaGioi` (`TenDiaGioi`) USING HASH,
+  KEY `FK_DMDiaGioiHanhChinh_DMDiaGioiHanhChinh` (`IdCapTren`),
+  KEY `FK_DMDiaGioiHanhChinh_DMTagNhom` (`IdNhomCap`),
+  CONSTRAINT `FK_DMDiaGioiHanhChinh_DMDiaGioiHanhChinh` FOREIGN KEY (`IdCapTren`) REFERENCES `dm_diagioihanhchinh` (`ID`),
+  CONSTRAINT `FK_DMDiaGioiHanhChinh_DMTagNhom` FOREIGN KEY (`IdNhomCap`) REFERENCES `dm_tagnhom` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `dm_giaphong`
---
-
-CREATE TABLE `dm_giaphong` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.dm_giaphong
+CREATE TABLE IF NOT EXISTS `dm_giaphong` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenGiaPhong` tinytext NOT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TenGiaPhong` (`TenGiaPhong`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `dm_khoanchi`
---
-
-CREATE TABLE `dm_khoanchi` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.dm_khoanchi
+CREATE TABLE IF NOT EXISTS `dm_khoanchi` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenKhoanChi` tinytext NOT NULL,
   `DonViTinh` tinytext NOT NULL,
   `DiaChi` text DEFAULT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TenKhoanChi` (`TenKhoanChi`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `dm_pass`
---
-
-CREATE TABLE `dm_pass` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.dm_pass
+CREATE TABLE IF NOT EXISTS `dm_pass` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenPass` tinytext NOT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TenPass` (`TenPass`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `dm_tagnhom`
---
-
-CREATE TABLE `dm_tagnhom` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.dm_tagnhom
+CREATE TABLE IF NOT EXISTS `dm_tagnhom` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenTag` text NOT NULL,
   `GhiChu` text DEFAULT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TenTag` (`TenTag`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `ds_chitieu`
---
-
-CREATE TABLE `ds_chitieu` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
-  `IdKhoanChi` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.ds_chitieu
+CREATE TABLE IF NOT EXISTS `ds_chitieu` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `IdKhoanChi` bigint(20) unsigned NOT NULL,
   `NgayThang` date NOT NULL,
-  `DonGia` bigint(20) UNSIGNED NOT NULL,
-  `SoLuong` tinyint(3) UNSIGNED NOT NULL,
-  `LaKhoanNhan` tinyint(1) NOT NULL,
+  `DonGia` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `SoLuong` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `LaKhoanNhan` tinyint(1) NOT NULL DEFAULT 0,
   `GhiChu` text DEFAULT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  KEY `FK_DSChiTieu_DMKhoanChi` (`IdKhoanChi`),
+  CONSTRAINT `FK_DSChiTieu_DMKhoanChi` FOREIGN KEY (`IdKhoanChi`) REFERENCES `dm_khoanchi` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `ds_diachi`
---
-
-CREATE TABLE `ds_diachi` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
-  `IdDiaGioi` bigint(20) UNSIGNED NOT NULL,
-  `DiaChiChiTiet` text NOT NULL,
+-- Dumping structure for table webappmanager.ds_diachi
+CREATE TABLE IF NOT EXISTS `ds_diachi` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `IdDiaGioi` bigint(20) unsigned NOT NULL,
+  `DiaChiChiTiet` text DEFAULT NULL,
   `GhiChu` text DEFAULT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  KEY `FK_DSDiaChi_DMDiaGioiHanhChinh` (`IdDiaGioi`),
+  CONSTRAINT `FK_DSDiaChi_DMDiaGioiHanhChinh` FOREIGN KEY (`IdDiaGioi`) REFERENCES `dm_diagioihanhchinh` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `ds_nguontien`
---
-
-CREATE TABLE `ds_nguontien` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.ds_nguontien
+CREATE TABLE IF NOT EXISTS `ds_nguontien` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenNguonTien` tinytext NOT NULL,
-  `IdNhomTien` bigint(20) UNSIGNED NOT NULL,
-  `DonGia` bigint(20) UNSIGNED NOT NULL,
-  `SoLuong` bigint(20) UNSIGNED NOT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IdNhomTien` bigint(20) unsigned NOT NULL,
+  `DonGia` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `SoLuong` bigint(20) unsigned NOT NULL DEFAULT 1,
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TenNguonTien` (`TenNguonTien`) USING HASH,
+  KEY `FK_DSNguonTien_DMTagNhom` (`IdNhomTien`),
+  CONSTRAINT `FK_DSNguonTien_DMTagNhom` FOREIGN KEY (`IdNhomTien`) REFERENCES `dm_tagnhom` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
--- --------------------------------------------------------
+-- Data exporting was unselected.
 
---
--- Cấu trúc bảng cho bảng `ds_taikhoan`
---
-
-CREATE TABLE `ds_taikhoan` (
-  `ID` bigint(20) UNSIGNED NOT NULL,
+-- Dumping structure for table webappmanager.ds_taikhoan
+CREATE TABLE IF NOT EXISTS `ds_taikhoan` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenDangNhap` tinytext NOT NULL,
   `MatKhau` text NOT NULL,
   `HashSalt` tinytext NOT NULL,
-  `IsActive` tinyint(1) NOT NULL,
-  `UpdatedAt` datetime NOT NULL
+  `IsActive` tinyint(1) NOT NULL DEFAULT 1,
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TenDangNhap` (`TenDangNhap`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci;
 
---
--- Chỉ mục cho các bảng đã đổ
---
+-- Data exporting was unselected.
 
---
--- Chỉ mục cho bảng `dm_diagioihanhchinh`
---
-ALTER TABLE `dm_diagioihanhchinh`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TenDiaGioi` (`TenDiaGioi`) USING HASH,
-  ADD KEY `FK_DMDiaGioiHanhChinh_DMDiaGioiHanhChinh` (`IdCapTren`),
-  ADD KEY `FK_DMDiaGioiHanhChinh_DMTagNhom` (`IdNhomCap`);
-
---
--- Chỉ mục cho bảng `dm_giaphong`
---
-ALTER TABLE `dm_giaphong`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TenGiaPhong` (`TenGiaPhong`) USING HASH;
-
---
--- Chỉ mục cho bảng `dm_khoanchi`
---
-ALTER TABLE `dm_khoanchi`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TenKhoanChi` (`TenKhoanChi`) USING HASH;
-
---
--- Chỉ mục cho bảng `dm_pass`
---
-ALTER TABLE `dm_pass`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TenPass` (`TenPass`) USING HASH;
-
---
--- Chỉ mục cho bảng `dm_tagnhom`
---
-ALTER TABLE `dm_tagnhom`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TenTag` (`TenTag`) USING HASH;
-
---
--- Chỉ mục cho bảng `ds_chitieu`
---
-ALTER TABLE `ds_chitieu`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `FK_DSChiTieu_DMKhoanChi` (`IdKhoanChi`);
-
---
--- Chỉ mục cho bảng `ds_diachi`
---
-ALTER TABLE `ds_diachi`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `FK_DSDiaChi_DMDiaGioiHanhChinh` (`IdDiaGioi`);
-
---
--- Chỉ mục cho bảng `ds_nguontien`
---
-ALTER TABLE `ds_nguontien`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TenNguonTien` (`TenNguonTien`) USING HASH,
-  ADD KEY `FK_DSNguonTien_DMTagNhom` (`IdNhomTien`);
-
---
--- Chỉ mục cho bảng `ds_taikhoan`
---
-ALTER TABLE `ds_taikhoan`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TenDangNhap` (`TenDangNhap`) USING HASH;
-
---
--- Các ràng buộc cho các bảng đã đổ
---
-
---
--- Các ràng buộc cho bảng `dm_diagioihanhchinh`
---
-ALTER TABLE `dm_diagioihanhchinh`
-  ADD CONSTRAINT `FK_DMDiaGioiHanhChinh_DMDiaGioiHanhChinh` FOREIGN KEY (`IDCapTren`) REFERENCES `dm_diagioihanhchinh` (`ID`),
-  ADD CONSTRAINT `FK_DMDiaGioiHanhChinh_DMTagNhom` FOREIGN KEY (`IDNhomCap`) REFERENCES `dm_tagnhom` (`ID`);
-
---
--- Các ràng buộc cho bảng `ds_chitieu`
---
-ALTER TABLE `ds_chitieu`
-  ADD CONSTRAINT `FK_DSChiTieu_DMKhoanChi` FOREIGN KEY (`IDKhoanChi`) REFERENCES `dm_khoanchi` (`ID`);
-
---
--- Các ràng buộc cho bảng `ds_diachi`
---
-ALTER TABLE `ds_diachi`
-  ADD CONSTRAINT `FK_DSDiaChi_DMDiaGioiHanhChinh` FOREIGN KEY (`IDDiaGioi`) REFERENCES `dm_diagioihanhchinh` (`ID`);
-
---
--- Các ràng buộc cho bảng `ds_nguontien`
---
-ALTER TABLE `ds_nguontien`
-  ADD CONSTRAINT `FK_DSNguonTien_DMTagNhom` FOREIGN KEY (`IDNhomTien`) REFERENCES `dm_tagnhom` (`ID`);
-
---
--- AUTO_INCREMENT cho các bảng đã đổ
---
-
-ALTER TABLE `dm_diagioihanhchinh`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `dm_giaphong`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `dm_khoanchi`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `dm_pass`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `dm_tagnhom`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `ds_chitieu`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `ds_diachi`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `ds_nguontien`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `ds_taikhoan`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-COMMIT;
-
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

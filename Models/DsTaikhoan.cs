@@ -1,12 +1,19 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DsTaikhoan : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DsTaikhoan
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
-    public string HashSalt { get; set; } = null!;
-    public string MatKhau { get; set; } = null!;
     public string TenDangNhap { get; set; } = null!;
 
-    #endregion Public Properties
+    public string MatKhau { get; set; } = null!;
+
+    public string HashSalt { get; set; } = null!;
+
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
 }

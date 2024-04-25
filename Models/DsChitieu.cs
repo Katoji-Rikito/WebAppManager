@@ -1,17 +1,27 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DsChitieu : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DsChitieu
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
-    public long DonGia { get; set; }
+    public ulong IdKhoanChi { get; set; }
+
+    public DateOnly NgayThang { get; set; }
+
+    public ulong DonGia { get; set; }
+
+    public byte SoLuong { get; set; }
+
+    public bool LaKhoanNhan { get; set; }
+
     public string? GhiChu { get; set; }
-    public long IdKhoanChi { get; set; }
+
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
 
     public virtual DmKhoanchi IdKhoanChiNavigation { get; set; } = null!;
-    public bool LaKhoanNhan { get; set; }
-    public DateTime NgayThang { get; set; }
-    public sbyte SoLuong { get; set; }
-
-    #endregion Public Properties
 }

@@ -1,14 +1,23 @@
-﻿namespace WebAppManager.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public partial class DsNguontien : BaseEntities
+namespace WebAppManager.Models;
+
+public partial class DsNguontien
 {
-    #region Public Properties
+    public ulong Id { get; set; }
 
-    public long DonGia { get; set; }
-    public long IdNhomTien { get; set; }
-    public virtual DmTagnhom IdNhomTienNavigation { get; set; } = null!;
-    public long SoLuong { get; set; }
     public string TenNguonTien { get; set; } = null!;
 
-    #endregion Public Properties
+    public ulong IdNhomTien { get; set; }
+
+    public ulong DonGia { get; set; }
+
+    public ulong SoLuong { get; set; }
+
+    public bool? IsActive { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual DmTagnhom IdNhomTienNavigation { get; set; } = null!;
 }
