@@ -8,9 +8,7 @@
     "preserveConstEnums": true,
     "sourceMap": true
   },
-  "include": [
-    "scripts"
-  ],
+  "include": [],
   "exclude": [],
   "typeAcquisition": {
     "enable": true

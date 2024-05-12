@@ -4,7 +4,7 @@
     {
         #region Public Properties
 
-        public long Id { get; set; }
+        public long ID { get; set; }
 
         public bool IsActive { get; set; }
 
