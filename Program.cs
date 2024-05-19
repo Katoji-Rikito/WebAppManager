@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAppManager.Filters;
 using WebAppManager.Models;
 using WebAppManager.Repositories;
 using WebAppManager.Repositories.Interfaces;
@@ -6,7 +7,10 @@ using WebAppManager.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(cfg =>
+{
+    cfg.Filters.Add(typeof(ExceptionHandler));
+});
 
 // Thêm Scoped của GenericRepository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
