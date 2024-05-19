@@ -1,4 +1,5 @@
 ﻿using DevExtreme.AspNet.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebAppManager.Models;
@@ -6,6 +7,7 @@ using WebAppManager.Repositories.Interfaces;
 
 namespace WebAppManager.Controllers
 {
+    [Authorize]
     public class BaseController<TController, TEntity> : Controller
         where TController : BaseController<TController, TEntity>
         where TEntity : BaseEntities

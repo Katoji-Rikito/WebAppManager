@@ -1,15 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using WebAppManager.Filters;
 using WebAppManager.Models;
 using WebAppManager.Repositories;
 using WebAppManager.Repositories.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(cfg =>
 {
-    cfg.Filters.Add(typeof(ExceptionHandler));
+    _ = cfg.Filters.Add(typeof(ExceptionHandler));
+});
+
+// Thêm services authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
+{
+    option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    option.SlidingExpiration = true;
+    option.LoginPath = "/Account/Index";
+    option.LogoutPath = "/Account/Logout";
+    option.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 // Thêm Scoped của GenericRepository
@@ -20,22 +31,23 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 string WebAppManagerDB = builder.Configuration.GetConnectionString("WebAppManagerConnection") ?? string.Empty;
 builder.Services.AddDbContext<WebappmanagerContext>(options =>
 {
-    try { options.UseMySql(WebAppManagerDB, ServerVersion.AutoDetect(WebAppManagerDB)); }
+    try { _ = options.UseMySql(WebAppManagerDB, ServerVersion.AutoDetect(WebAppManagerDB)); }
     catch (Exception ex) { throw new Exception(ex.Message); }
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    _ = app.UseExceptionHandler("/Home/Error");
 }
 
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
