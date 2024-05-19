@@ -38,9 +38,9 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                entityData.IsActive = true;
+                entityData.IsAble = true;
                 entityData.UpdatedAt = DateTime.Now;
-                await _dbSetEntity.AddAsync(entityData);
+                _ = await _dbSetEntity.AddAsync(entityData);
                 return entityData;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
@@ -58,7 +58,7 @@ namespace WebAppManager.Repositories
             {
                 entityDatas.ForEach(record =>
                 {
-                    record.IsActive = true;
+                    record.IsAble = true;
                     record.UpdatedAt = DateTime.Now;
                 });
                 await _dbSetEntity.AddRangeAsync(entityDatas);
@@ -77,7 +77,7 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                await Task.Run(() => _dbSetEntity.Remove(entityData));
+                _ = await Task.Run(() => _dbSetEntity.Remove(entityData));
                 return entityData;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
@@ -109,9 +109,9 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                entityData.IsActive = false;
+                entityData.IsAble = false;
                 entityData.UpdatedAt = DateTime.Now;
-                await Task.Run(() => _dbSetEntity.Update(entityData));
+                _ = await Task.Run(() => _dbSetEntity.Update(entityData));
                 return entityData;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
@@ -129,7 +129,7 @@ namespace WebAppManager.Repositories
             {
                 entityDatas.ForEach(record =>
                 {
-                    record.IsActive = false;
+                    record.IsAble = false;
                     record.UpdatedAt = DateTime.Now;
                 });
                 await Task.Run(() => _dbSetEntity.UpdateRange(entityDatas));
@@ -160,8 +160,7 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                if (filter is null) return await _dbSetEntity.FirstOrDefaultAsync();
-                return await _dbSetEntity.FirstOrDefaultAsync(filter);
+                return filter is null ? await _dbSetEntity.FirstOrDefaultAsync() : await _dbSetEntity.FirstOrDefaultAsync(filter);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
@@ -177,8 +176,7 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                if (filter is null) return await _dbSetEntity.ToListAsync();
-                return await _dbSetEntity.Where(filter).ToListAsync();
+                return filter is null ? await _dbSetEntity.ToListAsync() : (IEnumerable<TEntity>)await _dbSetEntity.Where(filter).ToListAsync();
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
@@ -193,8 +191,7 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                if (filter is null) throw new Exception(CommonMessages.NeedExpression);
-                return await _dbSetEntity.AnyAsync(filter);
+                return filter is null ? throw new Exception(CommonMessages.NeedExpression) : await _dbSetEntity.AnyAsync(filter);
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
@@ -210,7 +207,7 @@ namespace WebAppManager.Repositories
             try
             {
                 entityData.UpdatedAt = DateTime.Now;
-                await Task.Run(() => _dbSetEntity.Update(entityData));
+                _ = await Task.Run(() => _dbSetEntity.Update(entityData));
                 return entityData;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }

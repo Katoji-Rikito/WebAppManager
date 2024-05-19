@@ -15,7 +15,7 @@ namespace WebAppManager.Filters
         public void OnException(ExceptionContext context)
         {
             _logger.LogError(context.Exception, "Lỗi " + context.Exception.Message);
-            context.Result = new StatusCodeResult(500);
+            context.Result = new BadRequestObjectResult(new { data = context.Exception.Message });
             context.ExceptionHandled = true;
         }
 

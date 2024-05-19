@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace WebAppManager.Models;
 
 public partial class WebappmanagerContext : DbContext
 {
-    public WebappmanagerContext() { }
+    public WebappmanagerContext()
+    {
+    }
 
-    public WebappmanagerContext(DbContextOptions<WebappmanagerContext> options) : base(options) { }
-
-    public virtual DbSet<DmDiagioihanhchinh> DmDiagioihanhchinhs { get; set; }
-
-    public virtual DbSet<DmGiaphong> DmGiaphongs { get; set; }
-
-    public virtual DbSet<DmKhoanchi> DmKhoanchis { get; set; }
-
-    public virtual DbSet<DmPass> DmPasses { get; set; }
+    public WebappmanagerContext(DbContextOptions<WebappmanagerContext> options)
+        : base(options)
+    {
+    }
 
     public virtual DbSet<DmTagnhom> DmTagnhoms { get; set; }
 
-    public virtual DbSet<DsChitieu> DsChitieus { get; set; }
-
-    public virtual DbSet<DsDiachi> DsDiachis { get; set; }
+    public virtual DbSet<DsLichsuthaydoi> DsLichsuthaydois { get; set; }
 
     public virtual DbSet<DsNguontien> DsNguontiens { get; set; }
 
@@ -33,246 +25,117 @@ public partial class WebappmanagerContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
+        _ = modelBuilder
             .UseCollation("utf32_vietnamese_ci")
             .HasCharSet("utf32");
 
-        modelBuilder.Entity<DmDiagioihanhchinh>(entity =>
+        _ = modelBuilder.Entity<DmTagnhom>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            _ = entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("dm_diagioihanhchinh");
+            _ = entity.ToTable("dm_tagnhom", tb => tb.HasComment("Danh mục các tag, nhóm chung cho nhiều bảng"));
 
-            entity.HasIndex(e => e.IdCapTren, "FK_DMDiaGioiHanhChinh_DMDiaGioiHanhChinh");
+            _ = entity.HasIndex(e => e.TenTagNhom, "TenTagNhom").IsUnique();
 
-            entity.HasIndex(e => e.IdNhomCap, "FK_DMDiaGioiHanhChinh_DMTagNhom");
-
-            entity.HasIndex(e => e.TenDiaGioi, "TenDiaGioi").IsUnique();
-
-            entity.Property(e => e.Id)
+            _ = entity.Property(e => e.Id)
                 .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
-            entity.Property(e => e.IdCapTren).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.IdNhomCap).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.IsActive)
+            _ = entity.Property(e => e.GhiChu).HasColumnType("text");
+            _ = entity.Property(e => e.IsAble)
                 .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.TenCap).HasColumnType("tinytext");
-            entity.Property(e => e.TenDiaGioi).HasColumnType("tinytext");
-            entity.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasDefaultValueSql("current_timestamp()")
-                .HasColumnType("datetime");
-
-            entity.HasOne(d => d.IdCapTrenNavigation).WithMany(p => p.InverseIdCapTrenNavigation)
-                .HasForeignKey(d => d.IdCapTren)
-                .HasConstraintName("FK_DMDiaGioiHanhChinh_DMDiaGioiHanhChinh");
-
-            entity.HasOne(d => d.IdNhomCapNavigation).WithMany(p => p.DmDiagioihanhchinhs)
-                .HasForeignKey(d => d.IdNhomCap)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_DMDiaGioiHanhChinh_DMTagNhom");
-        });
-
-        modelBuilder.Entity<DmGiaphong>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("dm_giaphong");
-
-            entity.HasIndex(e => e.TenGiaPhong, "TenGiaPhong").IsUnique();
-
-            entity.Property(e => e.Id)
-                .HasColumnType("bigint(20) unsigned")
-                .HasColumnName("ID");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.TenGiaPhong).HasColumnType("tinytext");
-            entity.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasDefaultValueSql("current_timestamp()")
-                .HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<DmKhoanchi>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("dm_khoanchi");
-
-            entity.HasIndex(e => e.TenKhoanChi, "TenKhoanChi").IsUnique();
-
-            entity.Property(e => e.Id)
-                .HasColumnType("bigint(20) unsigned")
-                .HasColumnName("ID");
-            entity.Property(e => e.DiaChi).HasColumnType("text");
-            entity.Property(e => e.DonViTinh).HasColumnType("tinytext");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.TenKhoanChi).HasColumnType("tinytext");
-            entity.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasDefaultValueSql("current_timestamp()")
-                .HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<DmPass>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("dm_pass");
-
-            entity.HasIndex(e => e.TenPass, "TenPass").IsUnique();
-
-            entity.Property(e => e.Id)
-                .HasColumnType("bigint(20) unsigned")
-                .HasColumnName("ID");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.TenPass).HasColumnType("tinytext");
-            entity.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasDefaultValueSql("current_timestamp()")
-                .HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<DmTagnhom>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("dm_tagnhom");
-
-            entity.HasIndex(e => e.TenTag, "TenTag").IsUnique();
-
-            entity.Property(e => e.Id)
-                .HasColumnType("bigint(20) unsigned")
-                .HasColumnName("ID");
-            entity.Property(e => e.GhiChu).HasColumnType("text");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.TenTag).HasColumnType("text");
-            entity.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasDefaultValueSql("current_timestamp()")
-                .HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<DsChitieu>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("ds_chitieu");
-
-            entity.HasIndex(e => e.IdKhoanChi, "FK_DSChiTieu_DMKhoanChi");
-
-            entity.Property(e => e.Id)
-                .HasColumnType("bigint(20) unsigned")
-                .HasColumnName("ID");
-            entity.Property(e => e.DonGia).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.GhiChu).HasColumnType("text");
-            entity.Property(e => e.IdKhoanChi).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.IsActive)
-                .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.SoLuong)
                 .HasDefaultValueSql("'1'")
-                .HasColumnType("tinyint(3) unsigned");
-            entity.Property(e => e.UpdatedAt)
+                .HasComment("Hết hiệu lực: 0, có hiệu lực: 1");
+            _ = entity.Property(e => e.TenTagNhom).HasColumnType("text");
+            _ = entity.Property(e => e.UpdatedAt)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("current_timestamp()")
+                .HasComment("Thời gian cập nhật dữ liệu")
                 .HasColumnType("datetime");
-
-            entity.HasOne(d => d.IdKhoanChiNavigation).WithMany(p => p.DsChitieus)
-                .HasForeignKey(d => d.IdKhoanChi)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_DSChiTieu_DMKhoanChi");
         });
 
-        modelBuilder.Entity<DsDiachi>(entity =>
+        _ = modelBuilder.Entity<DsLichsuthaydoi>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            _ = entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("ds_diachi");
+            _ = entity.ToTable("ds_lichsuthaydoi", tb => tb.HasComment("Danh sách lịch sử thay đổi cơ sở dữ liệu"));
 
-            entity.HasIndex(e => e.IdDiaGioi, "FK_DSDiaChi_DMDiaGioiHanhChinh");
-
-            entity.Property(e => e.Id)
+            _ = entity.Property(e => e.Id)
                 .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
-            entity.Property(e => e.DiaChiChiTiet).HasColumnType("text");
-            entity.Property(e => e.GhiChu).HasColumnType("text");
-            entity.Property(e => e.IdDiaGioi).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.IsActive)
+            _ = entity.Property(e => e.GiaTriCu).HasColumnType("text");
+            _ = entity.Property(e => e.GiaTriMoi).HasColumnType("text");
+            _ = entity.Property(e => e.IdDong).HasColumnType("bigint(20) unsigned");
+            _ = entity.Property(e => e.IsAble)
                 .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("'1'")
+                .HasComment("Hết hiệu lực: 0, có hiệu lực: 1");
+            _ = entity.Property(e => e.LoaiThayDoi).HasColumnType("tinytext");
+            _ = entity.Property(e => e.TenBang).HasColumnType("text");
+            _ = entity.Property(e => e.TenCot).HasColumnType("text");
+            _ = entity.Property(e => e.UpdatedAt)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("current_timestamp()")
+                .HasComment("Thời gian cập nhật dữ liệu")
                 .HasColumnType("datetime");
-
-            entity.HasOne(d => d.IdDiaGioiNavigation).WithMany(p => p.DsDiachis)
-                .HasForeignKey(d => d.IdDiaGioi)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_DSDiaChi_DMDiaGioiHanhChinh");
         });
 
-        modelBuilder.Entity<DsNguontien>(entity =>
+        _ = modelBuilder.Entity<DsNguontien>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            _ = entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("ds_nguontien");
+            _ = entity.ToTable("ds_nguontien", tb => tb.HasComment("Danh sách nguồn tiền"));
 
-            entity.HasIndex(e => e.IdNhomTien, "FK_DSNguonTien_DMTagNhom");
+            _ = entity.HasIndex(e => e.IdNhomTien, "FK_DsNguonTien_DmTagNhom");
 
-            entity.HasIndex(e => e.TenNguonTien, "TenNguonTien").IsUnique();
+            _ = entity.HasIndex(e => e.TenNguonTien, "TenNguonTien").IsUnique();
 
-            entity.Property(e => e.Id)
+            _ = entity.Property(e => e.Id)
                 .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
-            entity.Property(e => e.DonGia).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.IdNhomTien).HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.IsActive)
+            _ = entity.Property(e => e.DonGia).HasColumnType("bigint(20) unsigned");
+            _ = entity.Property(e => e.IdNhomTien).HasColumnType("bigint(20) unsigned");
+            _ = entity.Property(e => e.IsAble)
                 .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.SoLuong)
+                .HasDefaultValueSql("'1'")
+                .HasComment("Hết hiệu lực: 0, có hiệu lực: 1");
+            _ = entity.Property(e => e.SoLuong)
                 .HasDefaultValueSql("'1'")
                 .HasColumnType("bigint(20) unsigned");
-            entity.Property(e => e.TenNguonTien).HasColumnType("tinytext");
-            entity.Property(e => e.UpdatedAt)
+            _ = entity.Property(e => e.TenNguonTien).HasColumnType("tinytext");
+            _ = entity.Property(e => e.UpdatedAt)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("current_timestamp()")
+                .HasComment("Thời gian cập nhật dữ liệu")
                 .HasColumnType("datetime");
 
-            entity.HasOne(d => d.IdNhomTienNavigation).WithMany(p => p.DsNguontiens)
+            _ = entity.HasOne(d => d.IdNhomTienNavigation).WithMany(p => p.DsNguontiens)
                 .HasForeignKey(d => d.IdNhomTien)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_DSNguonTien_DMTagNhom");
+                .HasConstraintName("FK_DsNguonTien_DmTagNhom");
         });
 
-        modelBuilder.Entity<DsTaikhoan>(entity =>
+        _ = modelBuilder.Entity<DsTaikhoan>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            _ = entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("ds_taikhoan");
+            _ = entity.ToTable("ds_taikhoan", tb => tb.HasComment("Danh sách tài khoản dùng để đăng nhập ứng dụng"));
 
-            entity.HasIndex(e => e.TenDangNhap, "TenDangNhap").IsUnique();
+            _ = entity.HasIndex(e => e.TenDangNhap, "TenDangNhap").IsUnique();
 
-            entity.Property(e => e.Id)
+            _ = entity.Property(e => e.Id)
                 .HasColumnType("bigint(20) unsigned")
                 .HasColumnName("ID");
-            entity.Property(e => e.HashSalt).HasColumnType("tinytext");
-            entity.Property(e => e.IsActive)
+            _ = entity.Property(e => e.HashSalt).HasColumnType("tinytext");
+            _ = entity.Property(e => e.IsAble)
                 .IsRequired()
-                .HasDefaultValueSql("'1'");
-            entity.Property(e => e.MatKhau).HasColumnType("text");
-            entity.Property(e => e.TenDangNhap).HasColumnType("tinytext");
-            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("'1'")
+                .HasComment("Hết hiệu lực: 0, có hiệu lực: 1");
+            _ = entity.Property(e => e.MatKhau).HasColumnType("text");
+            _ = entity.Property(e => e.TenDangNhap).HasColumnType("tinytext");
+            _ = entity.Property(e => e.UpdatedAt)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("current_timestamp()")
+                .HasComment("Thời gian cập nhật dữ liệu")
                 .HasColumnType("datetime");
         });
 

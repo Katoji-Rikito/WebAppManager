@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace WebAppManager.Models;
 
-namespace WebAppManager.Models;
-
-public partial class DmTagnhom
+/// <summary>
+/// Danh mục các tag, nhóm chung cho nhiều bảng
+/// </summary>
+public partial class DmTagnhom : BaseEntities
 {
-    public ulong Id { get; set; }
 
-    public string TenTag { get; set; } = null!;
+    public string TenTagNhom { get; set; } = null!;
 
     public string? GhiChu { get; set; }
 
-    public bool? IsActive { get; set; }
-
-    public DateTime UpdatedAt { get; set; }
-
-    public virtual ICollection<DmDiagioihanhchinh> DmDiagioihanhchinhs { get; set; } = new List<DmDiagioihanhchinh>();
-
-    public virtual ICollection<DsNguontien> DsNguontiens { get; set; } = new List<DsNguontien>();
+    public virtual ICollection<DsNguontien> DsNguontiens { get; set; } = [];
 }
