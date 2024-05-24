@@ -1,25 +1,20 @@
 ﻿@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "😱 Lỗi !!!";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<h1 class="text-danger">😭 Ôi không, đã xảy ra lỗi khi thực hiện yêu cầu !!!</h1>
 
 @if (Model.ShowRequestId)
 {
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
+    <p><strong>👉 ID yêu cầu:</strong> <code>@Model.RequestId</code></p>
 }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+<h2>🕵 Mô tả lỗi (Message): <span style="font-weight:normal;">@Model.Message</span></h2>
+<h4>🔎 Ngăn xếp lệnh (StackTrace): <span style="font-weight:lighter;">@Model.StackTrace</span></h4>
+<h4>🔎 Ngoại lệ bên trong (InnerException): <span style="font-weight:lighter;">@Model.InnerException</span></h4>
+<h4>🔎 Phương thức (TargetSite): <span style="font-weight:lighter;">@Model.TargetSite</span></h4>
+<h4>🔎 Dữ liệu (Data): <span style="font-weight:lighter;">@Model.Data</span></h4>
+<h4>🔎 Nguồn (Source): <span style="font-weight:lighter;">@Model.Source</span></h4>
+<h4>🔎 Mã ngoại lệ (HResult): <span style="font-weight:lighter;">@Model.HResult</span></h4>
+<h4>🔎 URL tài liệu trợ giúp (HelpLink): <span style="font-weight:lighter;">@Model.HelpLink</span></h4>
