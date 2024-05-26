@@ -5,51 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <!------------------------------------ Themes ------------------------------------>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="~/content/images/favicon.ico">
     <!-- Bootstrap theme -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
+    <!-- Font Awesome theme -->
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" asp-append-version="true" />
     <!-- DevExtreme theme -->
-    <link rel="stylesheet" href="~/lib/devextreme-dist/css/dx.fluent.blue.dark.compact.min.css" asp-append-version="true" />
-    <!-- Local theme -->
+    <link rel="stylesheet" href="~/lib/devextreme-dist/css/dx.fluent.blue.dark.compact.css" asp-append-version="true" />
+    <!-- App theme -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebAppManager.styles.css" asp-append-version="true" />
     <!------------------------------------ Libraries ------------------------------------>
-    <!-- Jquery libraries -->
-    <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
-    <!-- Bootstrap libraries -->
-    <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    <!-- DevExtreme libraries -->
-    <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.min.js" asp-append-version="true"></script>
-    <!-- Local libraries -->
-    <script type="text/javascript" src="~/js/WebAppManager.js" asp-append-version="true"></script>
+    <!-- Bootstrap library -->
+    <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.bundle.js" asp-append-version="true"></script>
+    <!-- Font Awesome library -->
+    <script type="text/javascript" src="~/lib/font-awesome/js/all.js" data-auto-replace-svg="nest" asp-append-version="true"></script>
+    <!-- Excel xlsx library -->
+    <script type="text/javascript" src="~/lib/xlsx/xlsx.full.min.js" asp-append-version="true"></script>
+    <!-- Jquery library -->
+    <script type="text/javascript" src="~/lib/jquery/jquery.js" asp-append-version="true"></script>
+    <!-- Jquery validate library -->
+    <script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.js" asp-append-version="true"></script>
+    <!-- DevExtreme library -->
+    <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.js" asp-append-version="true"></script>
 </head>
 <body class="dx-viewport">
     <header>
-        <nav class="navbar navbar-expand navbar-toggleable navbar-dark bg-dark">
-            <div class="container-fluid dropdown">
+        <nav id="navbarApp" class="navbar navbar-expand py-0 navbar-dark bg-dark fixed-top justify-content-between">
+            @* Menu *@
+            <div class="nav-item dropdown">
                 <button id="MenuApp" type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-bars" ></i>
                     @ViewData["Title"]
-                    <span class="caret"></span>
+                    <span id="notifyText" />
                 </button>
-                <ul id="SubMenuApp" class="dropdown-menu bg-dark overflow-auto" aria-labelledby="MenuApp">
+                <ul id="SubMenuApp" class="dropdown-menu bg-dark overflow-auto">
                     <li><h5 class="dropdown-header">Dropdown header 1</h5></li>
                     <li>
                         <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link dropdown-item" href="#">Another action</a>
                     </li>
-                    <li class="dropdown-divider"></li>
-                    <li><h5 class="dropdown-header">Dropdown header 1</h5></li>
+                    <li><h5 class="dropdown-header">Dropdown header 2</h5></li>
                     <li>
                         <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
                 </ul>
             </div>
+            @* Clock *@
+            <div class="nav-item"><i class="fa fa-clock"></i> <span id="digitalClock" /></div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="">
-            @RenderBody()
-        </main>
-    </div>
 
+    <main id="mainContent" role="main" class="container-fluid">
+        <div id="dxLoadingPanel"></div>
+        @RenderBody()
+    </main>
+
+    <!-- App library -->
+    <script type="text/javascript" src="~/js/WebAppManager.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

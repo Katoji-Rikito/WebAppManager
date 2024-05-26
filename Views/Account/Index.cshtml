@@ -1,5 +1,18 @@
-﻿@{
+﻿@model WebAppManager.Models.DsTaikhoan
+@{
     ViewData["Title"] = "Đăng nhập";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div id="dxForm_Account"></div>
+@* <form asp-controller="Account" asp-action="Login" method="post">
+    <div>
+        <label asp-for="TenDangNhap"></label>
+        <input asp-for="TenDangNhap" />
+    </div>
+    <div>
+        <label asp-for="MatKhau"></label>
+        <input asp-for="MatKhau" type="password" />
+    </div>
+    <button type="submit">Đăng nhập</button>
+</form> *@

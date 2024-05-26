@@ -10,6 +10,7 @@ namespace WebAppManager.Repositories
         #region Private Fields
 
         private readonly WebappmanagerContext _context;
+
         private readonly DbSet<TEntity> _dbSetEntity;
 
         #endregion Private Fields
@@ -166,8 +167,7 @@ namespace WebAppManager.Repositories
         }
 
         /// <summary>
-        /// Lấy nhiều dòng dữ liệu theo điều kiện truyền vào. Nếu không có điều kiện truyền vào thì
-        /// lấy toàn bộ bảng
+        /// Lấy nhiều dòng dữ liệu theo điều kiện truyền vào. Nếu không có điều kiện truyền vào thì lấy toàn bộ bảng
         /// </summary>
         /// <param name="filter"> Điều kiện cần lấy (Nếu có) </param>
         /// <returns> Danh sách dữ liệu theo điều kiện vừa truyền vào </returns>

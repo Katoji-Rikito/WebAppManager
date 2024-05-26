@@ -6,9 +6,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace WebAppManager.Models
 {
     [ModelBinder(BinderType = typeof(DataSourceLoadOptionsBinder))]
-    public class DataSourceLoadOptions : DataSourceLoadOptionsBase { }
+    public class DataSourceLoadOptions : DataSourceLoadOptionsBase
+    {
+    }
+
     public class DataSourceLoadOptionsBinder : IModelBinder
     {
+        #region Public Methods
+
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             DataSourceLoadOptions loadOptions = new();
@@ -16,5 +21,7 @@ namespace WebAppManager.Models
             bindingContext.Result = ModelBindingResult.Success(loadOptions);
             return Task.CompletedTask;
         }
+
+        #endregion Public Methods
     }
 }

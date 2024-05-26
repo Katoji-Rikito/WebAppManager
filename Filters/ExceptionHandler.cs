@@ -10,16 +10,29 @@ namespace WebAppManager.Filters
 {
     public class ExceptionHandler : IExceptionFilter
     {
+        #region Private Fields
+
         private readonly ILogger<ExceptionHandler> _logger;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public ExceptionHandler(ILogger<ExceptionHandler> logger)
         {
             _logger = logger;
         }
+
+        #endregion Public Constructors
+
+
+
         #region Public Methods
 
         public void OnException(ExceptionContext context)
         {
             _logger.LogError(context.Exception, "Lỗi " + context.Exception.Message);
+
             //context.Result = new BadRequestObjectResult(new { data = context.Exception.Message });
             context.Result = new ViewResult
             {
@@ -43,11 +56,13 @@ namespace WebAppManager.Filters
             context.ExceptionHandled = true;
         }
 
-        /// <summary>
-        /// Chuyển IDictionary sang IDictionary<string, object>
-        /// </summary>
-        /// <param name="data">Dữ liệu cần chuyển</param>
-        /// <returns>IDictionary<string, object></returns>
+        #endregion Public Methods
+
+
+
+        #region Private Methods
+
+        /// <summary> Chuyển IDictionary sang IDictionary<string, object> </summary> <param name="data">Dữ liệu cần chuyển</param> <returns>IDictionary<string, object></returns>
         private IDictionary<string, object> ConvertToGenericDictionary(IDictionary data)
         {
             var result = new Dictionary<string, object>();
@@ -59,6 +74,6 @@ namespace WebAppManager.Filters
             return result;
         }
 
-        #endregion Public Methods
+        #endregion Private Methods
     }
 }

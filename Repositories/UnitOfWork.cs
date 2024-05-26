@@ -9,8 +9,11 @@ namespace WebAppManager.Repositories
         #region Private Fields
 
         private readonly WebappmanagerContext _context;
+
         private readonly Dictionary<Type, object> _repoDict = new Dictionary<Type, object>();
+
         private IDbContextTransaction _transaction = null!;
+
         private bool disposed = false;
 
         #endregion Private Fields

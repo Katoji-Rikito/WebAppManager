@@ -29,11 +29,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Thêm kết nối đến cơ sở dữ liệu MariaDB
 string WebAppManagerDB = builder.Configuration.GetConnectionString("WebAppManagerConnection") ?? string.Empty;
-builder.Services.AddDbContext<WebappmanagerContext>(options =>
-{
-    try { _ = options.UseMySql(WebAppManagerDB, ServerVersion.AutoDetect(WebAppManagerDB)); }
-    catch (Exception ex) { throw new Exception(ex.Message); }
-});
+builder.Services.AddDbContext<WebappmanagerContext>(options => options.UseMySql(WebAppManagerDB, ServerVersion.AutoDetect(WebAppManagerDB)));
 
 WebApplication app = builder.Build();
 
@@ -44,9 +40,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
