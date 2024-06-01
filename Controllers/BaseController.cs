@@ -24,14 +24,6 @@ namespace WebAppManager.Controllers
 
         #endregion Protected Properties
 
-        #region Public Methods
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Error()
-        {
-            return await Task.Run(() => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }));
-        }
-
         public async Task<IActionResult> GetList(DataSourceLoadOptions loadOptions)
         {
             IEnumerable<TEntity> listResult = await UnitOfWork.GetRepository<TEntity>().GetListAsync();
@@ -43,6 +35,4 @@ namespace WebAppManager.Controllers
             return await Task.Run(View);
         }
     }
-
-    #endregion Public Methods
 }

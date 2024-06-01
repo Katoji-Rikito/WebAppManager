@@ -37,16 +37,34 @@ namespace WebAppManager.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            IEnumerable<DsTaikhoan> result = await _unitOfWork.GetRepository<DsTaikhoan>().GetListAsync();
             return await Task.Run(() => Ok("Đăng xuất thành công!"));
         }
 
-        public async Task<IActionResult> Login(string userName, string userPass)
+        public async Task<IActionResult> Login(string userName = "", string userPass = "", string gift = "")
         {
             IEnumerable<DsTaikhoan> result = await _unitOfWork.GetRepository<DsTaikhoan>().GetListAsync();
-            return await Task.Run(() => Unauthorized("Đăng nhập thành công!"));
+            await CheckAccount(userName, userPass, gift);
+            return await Task.Run(() => Ok("Đăng nhập thành công!"));
         }
 
         #endregion Public Methods
+
+
+
+        #region Private Methods
+
+        private async Task<bool> CheckAccount(string userName = "", string userPass = "", string key = "")
+        {
+            // TODO: Giải mã mật khẩu gửi về
+
+            // TODO: Mã hoá mật khẩu để check
+
+            // TODO: Lấy thông tin tài khoản trong CSDL
+
+            // TODO: So sánh và đối chiếu
+            return true;
+        }
+
+        #endregion Private Methods
     }
 }

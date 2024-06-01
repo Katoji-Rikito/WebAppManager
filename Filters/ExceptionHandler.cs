@@ -32,8 +32,7 @@ namespace WebAppManager.Filters
         public void OnException(ExceptionContext context)
         {
             _logger.LogError(context.Exception, "Lỗi " + context.Exception.Message);
-
-            //context.Result = new BadRequestObjectResult(new { data = context.Exception.Message });
+            context.ExceptionHandled = true;
             context.Result = new ViewResult
             {
                 ViewName = "Error",
@@ -41,19 +40,18 @@ namespace WebAppManager.Filters
                 {
                     Model = new ErrorViewModel
                     {
-                        RequestId = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier,
-                        Data = ConvertToGenericDictionary(context.Exception.Data),
-                        HelpLink = context.Exception.HelpLink,
-                        HResult = context.Exception.HResult.ToString(),
-                        InnerException = context.Exception.InnerException?.ToString(),
-                        Message = context.Exception.Message,
-                        Source = context.Exception.Source,
-                        StackTrace = context.Exception.StackTrace,
-                        TargetSite = context.Exception.TargetSite?.ToString(),
+                        RequestId = Activity.Current?.Id ?? context?.HttpContext?.TraceIdentifier,
+                        Data = ConvertToGenericDictionary(context?.Exception?.Data),
+                        HelpLink = context?.Exception?.HelpLink,
+                        HResult = context?.Exception?.HResult.ToString(),
+                        InnerException = context?.Exception?.InnerException?.ToString(),
+                        Message = context?.Exception?.Message,
+                        Source = context?.Exception?.Source,
+                        StackTrace = context?.Exception?.StackTrace,
+                        TargetSite = context?.Exception?.TargetSite?.ToString(),
                     }
                 }
             };
-            context.ExceptionHandled = true;
         }
 
         #endregion Public Methods
@@ -62,10 +60,15 @@ namespace WebAppManager.Filters
 
         #region Private Methods
 
-        /// <summary> Chuyển IDictionary sang IDictionary<string, object> </summary> <param name="data">Dữ liệu cần chuyển</param> <returns>IDictionary<string, object></returns>
-        private IDictionary<string, object> ConvertToGenericDictionary(IDictionary data)
+        /// <summary>
+        /// Chuyển IDictionary sang IDictionary<string, object>
+        /// </summary>
+        /// <param name="data">Dữ liệu cần chuyển</param>
+        /// <returns>IDictionary<string, object></returns>
+        private IDictionary<string, object> ConvertToGenericDictionary(IDictionary? data = null)
         {
             var result = new Dictionary<string, object>();
+            if (data is null) return result;
             foreach (DictionaryEntry entry in data)
             {
                 if (entry.Key is string key)

@@ -14,13 +14,16 @@ builder.Services.AddControllersWithViews(cfg =>
 });
 
 // Thêm services authentication
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(option =>
 {
     option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     option.SlidingExpiration = true;
     option.LoginPath = "/Account/Index";
     option.LogoutPath = "/Account/Logout";
     option.AccessDeniedPath = "/Account/AccessDenied";
+    option.Cookie.Name = "WebAppManagerCookie";
 });
 
 // Thêm Scoped của GenericRepository
@@ -43,9 +46,11 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCookiePolicy();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.Run();

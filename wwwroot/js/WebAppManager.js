@@ -16,16 +16,15 @@ function IsNullOrEmpty(value) {
 }
 
 // THÊM PADDING TOP CHO PHẦN HIỂN THỊ NỘI DUNG ---------------------------------------------------------------------------------------------------
-/**
-* Điều chỉnh padding-top của nội dung chính
-*/
-const adjustMainPaddingTop = () => $("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
+
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Điều chỉnh padding-top của nội dung chính
+    const adjustMainPaddingTop = () => $("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
+
     // Điều chỉnh padding-top khi tải trang
     adjustMainPaddingTop();
 
-    // Adjust padding when the window is resized
     // Điều chỉnh padding-top khi cửa sổ thay đổi kích thước
     window.addEventListener("resize", adjustMainPaddingTop);
 });
@@ -85,6 +84,7 @@ async function GetData(callURL = "", showNotify = false, actionForSuccess = null
             console.log(result);
             console.log(status);
             console.log(xhr);
+            actionForSuccess();
         },
         error(xhr, status, error) {
             console.log(error);
@@ -111,6 +111,7 @@ async function PostData(callURL = "", showNotify = false, args = [], actionForSu
             console.log(result);
             console.log(status);
             console.log(xhr);
+            actionForSuccess();
         },
         error(xhr, status, error) {
             console.log(error);
@@ -201,4 +202,31 @@ function changeTextMode(id) {
  */
 function GetEditorValue(form = null, id ="") {
     return form?.getEditor(id)?.option("value");
+}
+
+// MÃ HOÁ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function encrypt(data) {
+    // convert the JSON object to a string
+    const jsonDataString = JSON.stringify(data);
+
+    // Create iv and secret_key
+    let iv = crypto.randomBytes(16);
+    let secret_key = crypto.randomBytes(32);
+
+    iv = CryptoJS.lib.WordArray.create(iv);
+    secret_key = CryptoJS.lib.WordArray.create(secret_key);
+
+    // Encrypt the plaintext using AES/CBC/PKCS5Padding
+    const ciphertext = CryptoJS.AES.encrypt(jsonDataString, secret_key, {
+        iv: iv,
+        padding: CryptoJS.pad.Pkcs7,
+        mode: CryptoJS.mode.CBC,
+    });
+
+    console.log("iv", iv);
+    console.log("secret_key", secret_key);
+    console.log("cipherText", ciphertext);
+
+    // Print the ciphertext
+    console.log(ciphertext.toString());
 }

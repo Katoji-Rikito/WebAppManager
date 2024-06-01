@@ -28,6 +28,8 @@
     <script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.js" asp-append-version="true"></script>
     <!-- DevExtreme library -->
     <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.js" asp-append-version="true"></script>
+    <!-- App library -->
+    <script type="text/javascript" src="~/js/WebAppManager.js" asp-append-version="true"></script>
 </head>
 <body class="dx-viewport">
     <header>
@@ -61,8 +63,6 @@
         @RenderBody()
     </main>
 
-    <!-- App library -->
-    <script type="text/javascript" src="~/js/WebAppManager.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

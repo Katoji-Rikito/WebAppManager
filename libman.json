@@ -7,6 +7,10 @@
 			"library": "bootstrap@5.3.3"
 		},
 		{
+			"destination": "wwwroot/lib/crypto-js/",
+			"library": "crypto-js@4.2.0"
+		},
+		{
 			"destination": "wwwroot/lib/devextreme-dist/",
 			"library": "devextreme-dist@23.2.5"
 		},
