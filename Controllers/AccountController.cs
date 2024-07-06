@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebAppManager.Models;
 using WebAppManager.Repositories.Interfaces;
 
 namespace WebAppManager.Controllers
@@ -40,11 +39,10 @@ namespace WebAppManager.Controllers
             return await Task.Run(() => Ok("Đăng xuất thành công!"));
         }
 
-        public async Task<IActionResult> Login(string userName = "", string userPass = "", string gift = "")
+        public async Task<IActionResult> Login(string userName = "", string userPass = "")
         {
-            IEnumerable<DsTaikhoan> result = await _unitOfWork.GetRepository<DsTaikhoan>().GetListAsync();
-            await CheckAccount(userName, userPass, gift);
-            return await Task.Run(() => Ok("Đăng nhập thành công!"));
+            await CheckAccount(userName, userPass);
+            return await Task.Run(() => Ok(new { msg = "Đăng nhập thành công!" }));
         }
 
         #endregion Public Methods
@@ -53,16 +51,14 @@ namespace WebAppManager.Controllers
 
         #region Private Methods
 
-        private async Task<bool> CheckAccount(string userName = "", string userPass = "", string key = "")
+        private async Task<bool> CheckAccount(string userName = "", string userPass = "")
         {
-            // TODO: Giải mã mật khẩu gửi về
-
-            // TODO: Mã hoá mật khẩu để check
+            // TODO: Mã hoá mật khẩu
 
             // TODO: Lấy thông tin tài khoản trong CSDL
-
+            //IEnumerable<DsTaikhoan> result = await _unitOfWork.GetRepository<DsTaikhoan>().GetListAsync();
             // TODO: So sánh và đối chiếu
-            return true;
+            return await Task.Run(() => true);
         }
 
         #endregion Private Methods

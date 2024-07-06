@@ -16,6 +16,8 @@
     <!-- App theme -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <!------------------------------------ Libraries ------------------------------------>
+    <!-- Axios library -->
+    <script type="text/javascript" src="~/lib/axios/axios.js" asp-append-version="true"></script>
     <!-- Bootstrap library -->
     <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.bundle.js" asp-append-version="true"></script>
     <!-- Font Awesome library -->
@@ -26,10 +28,11 @@
     <script type="text/javascript" src="~/lib/jquery/jquery.js" asp-append-version="true"></script>
     <!-- Jquery validate library -->
     <script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.js" asp-append-version="true"></script>
+    <!-- Moment.js library -->
+    <script type="text/javascript" src="~/lib/momentjs/moment.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/momentjs/locale/vi.js" asp-append-version="true"></script>
     <!-- DevExtreme library -->
     <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.js" asp-append-version="true"></script>
-    <!-- App library -->
-    <script type="text/javascript" src="~/js/WebAppManager.js" asp-append-version="true"></script>
 </head>
 <body class="dx-viewport">
     <header>
@@ -63,6 +66,8 @@
         @RenderBody()
     </main>
 
+    <!-- App library -->
+    <script type="text/javascript" src="~/js/WebAppManager.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
