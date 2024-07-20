@@ -4,245 +4,270 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // CÁC THIẾT LẬP MẶC ĐỊNH ---------------------------------------------------------------------------------------------------
-// THÊM PADDING TOP CHO PHẦN HIỂN THỊ NỘI DUNG
+/**
+ * Thêm padding-top cho phần hiển thị nội dung
+ */
 document.addEventListener("DOMContentLoaded", function () {
-	// Điều chỉnh padding-top của nội dung chính
-	const adjustMainPaddingTop = () =>
-		$("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
+    // Điều chỉnh padding-top của nội dung chính
+    const adjustMainPaddingTop = () =>
+        $("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
 
-	// Điều chỉnh padding-top khi tải trang
-	adjustMainPaddingTop();
+    // Điều chỉnh padding-top khi tải trang
+    adjustMainPaddingTop();
 
-	// Điều chỉnh padding-top khi cửa sổ thay đổi kích thước
-	window.addEventListener("resize", adjustMainPaddingTop);
+    // Điều chỉnh padding-top khi cửa sổ thay đổi kích thước
+    window.addEventListener("resize", adjustMainPaddingTop);
 });
 
-// THỜI GIAN
+/**
+ * Thiết lập thời gian
+ */
 moment.locale("vi");
 
-// KHAI BÁO CÁC BIẾN ---------------------------------------------------------------------------------------------------
-const urlLogin = "/Account/Login";
-const urlLogout = "/Account/Logout";
+/**
+ * Loại bỏ thông báo bản quyền DevExtreme 24.1
+ */
+//$(document).ready(() => $("#Layer_1").click());
 
-// CÁC HÀM HỖ TRỢ ---------------------------------------------------------------------------------------------------
+// CÁC HÀM HỖ TRỢ KIỂM TRA ---------------------------------------------------------------------------------------------------
+/**
+ * Kiểm tra giá trị truyền vào có phải là một hàm không
+ * @param {any} value Giá trị cần kiểm tra
+ * @returns True nếu là một hàm
+ */
+function IsFunction(value) {
+    return value instanceof Function;
+}
+
+/**
+ * Kiểm tra giá trị có tồn tại hay không
+ * @param {any} value Giá trị cần kiểm tra
+ * @returns True nếu đã tồn tại
+ */
+function IsThisDefined(value) {
+    return value !== undefined && value !== null;
+}
+
 /**
  * Kiểm tra giá trị có trống hay rỗng không
  * @param {any} value Giá trị cần kiểm tra
  * @returns True nếu trống
  */
-async function IsThisNullOrEmpty(value) {
-	return value === undefined || value === null || value === "";
+function IsThisNullOrEmpty(value) {
+    return !IsThisDefined(value) || value === "";
 }
 
+// CÁC HÀM HỖ TRỢ CHUỖI ---------------------------------------------------------------------------------------------------
 /**
  * Viết hoa chữ cái đầu tiên của chuỗi string
  * @param {string} value Chuỗi cần viết hoa
  * @returns Chuỗi đã viết hoa chữ cái đầu tiên
  */
-async function CapitalizeString(value) {
-	if (await IsThisNullOrEmpty(value)) return value;
-	return value?.charAt(0)?.toUpperCase() + value?.slice(1);
+function CapitalizeString(value) {
+    if (IsThisNullOrEmpty(value))
+        return value;
+    return value?.charAt(0)?.toUpperCase() + value?.slice(1);
 }
-
-// HIỂN THỊ THỜI GIAN THỰC
-setInterval(
-	async () =>
-		$("#digitalClock")?.text(
-			await CapitalizeString(moment().format("dddd, DD/MM/YYYY HH:mm:ss A")),
-		),
-	500,
-);
-
-// CÁC HÀM HỖ TRỢ FORM ---------------------------------------------------------------------------------------------------
-/**
- * Thay đổi chế độ text và password
- * @param {string} id Tên trường cần thay đổi
- */
-function ChangeTextMode(id) {
-	const txtPass = dxForm_Account?.getEditor(id);
-	const iconPass = txtPass?.getButton("showText");
-	if (txtPass?.option("mode") === "text") {
-		txtPass?.option("mode", "password");
-		iconPass?.option("icon", "eyeopen");
-	} else {
-		txtPass?.option("mode", "text");
-		iconPass?.option("icon", "eyeclose");
-	}
-}
-
-/**
- * Lấy giá trị từ form
- * @param {any} form Form cần lấy giá trị
- * @param {string} id ID cần lấy giá trị
- * @returns Giá trị lấy được
- */
-function GetEditorValue(form = null, id = "") {
-	return form?.getEditor(id)?.option("value");
-}
-
-// MÀN HÌNH LOADING ---------------------------------------------------------------------------------------------------
-const loadPanel = $("#dxLoadingPanel")
-	?.dxLoadPanel({
-		focusStateEnabled: true, // Chỉ định xem thành phần UI có thể được tập trung hay không
-		hideOnOutsideClick: true, // Ẩn nếu click vào vùng ngoài
-		hideOnParentScroll: true, // Ẩn nếu cuộn phần tử cha
-		hint: "Đang tải dữ liệu . . .", // Chỉ định văn bản cho gợi ý xuất hiện khi người dùng tạm dừng trên thành phần UI
-		hoverStateEnabled: true, // Chỉ định xem thành phần giao diện người dùng có thay đổi trạng thái hay không khi người dùng tạm dừng trên đó
-		indicatorSrc: "/content/images/loading.gif", // Nguồn thay cho hình ảnh mặc định
-		message: "Đang tải dữ liệu . . .",
-		position: { my: "center", at: "center", of: "#mainContent" }, // Vị trí hiển thị
-		shading: true, // Tạo bóng nền hay không
-		shadingColor: "rgba(0,0,0,0.25)", // Màu bóng nền
-		showIndicator: true, // Hiện ảnh loading
-		showPane: true, // Hiện bảng
-	})
-	.dxLoadPanel("instance");
-
-$(document)
-	.ajaxStart(async () => {
-		$("#notifyText")?.text("(Đang tải dữ liệu . . .)");
-		loadPanel?.show();
-	})
-	.ajaxStop(async () => {
-		$("#notifyText")?.text("");
-		loadPanel?.hide();
-	});
 
 // CÁC HÀM HỖ TRỢ GỌI SERVER ---------------------------------------------------------------------------------------------------
 /**
- * Hàm lấy dữ liệu từ server
+ * Hàm gọi dữ liệu từ server
  * @param {string} callURL URL cần gọi
+ * @param {boolean} isAsync Thực hiện bất đồng bộ hay không? True là có
  * @param {boolean} showNotify Hiện thông báo không? True là hiện
- * @param {function} actionForSuccess Hàm sẽ thực thi nếu thành công
+ * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
+ * @param {function} actionFail Hàm sẽ thực thi nếu thất bại
  */
-function GetData(
-	callURL = "",
-	showNotify = false,
-	actionForSuccess = null,
+function CallServer_GET(
+    callURL = "",
+    isAsync = true,
+    showNotify = false,
+    actionSuccess = null,
+    actionFail = null,
 ) {
-	$.ajax({
-		url: callURL,
-		type: "GET",
-		async: true,
-		dataType: "json",
-		success(result, status, xhr) {
-			console.log(result);
-			console.log(status);
-			console.log(xhr);
-			if (!IsThisNullOrEmpty(actionForSuccess)) actionForSuccess();
-		},
-		error(xhr, status, error) {
-			console.log(error);
-			console.log(status);
-			console.log(xhr);
-			if (!IsThisNullOrEmpty(actionForError)) actionForError();
-		},
-	});
+    $.ajax({
+        url: callURL,
+        type: "GET",
+        async: isAsync,
+        dataType: "json",
+        success(result, status, xhr) {
+            //console.log(result);
+            //console.log(status);
+            //console.log(xhr);
+            if (showNotify)
+                DevExpress.ui.notify("Thành công", "success", 3000);
+
+            if (IsFunction(actionSuccess))
+                actionSuccess(result);
+        },
+        error(xhr, status, error) {
+            console.log("xhr: " + xhr);
+            console.log("status: " + status);
+            console.log("error: " + error);
+            DevExpress.ui.notify("Thất bại: " + xhr, "error", 3000);
+
+            if (IsFunction(actionFail))
+                actionFail(xhr);
+        },
+    });
 }
 
 /**
  * Hàm gửi dữ liệu về server
  * @param {string} callURL URL cần gọi
+ * @param {boolean} isAsync Thực hiện bất đồng bộ hay không? True là có
  * @param {boolean} showNotify Hiện thông báo không? True là hiện
  * @param {object} args Tham số cần gửi về server
- * @param {function} actionForSuccess Hàm sẽ thực thi nếu thành công
+ * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
+ * @param {function} actionFail Hàm sẽ thực thi nếu thất bại
  */
-function PostData(
-	callURL = "",
-	showNotify = false,
-	args = [],
-	actionForSuccess = null,
+function CallServer_POST(
+    callURL = "",
+    isAsync = true,
+    showNotify = false,
+    args = [],
+    actionSuccess = null,
+    actionFail = null,
 ) {
-	$.ajax({
-		url: callURL,
-		type: "POST",
-		async: true,
-		dataType: "json",
-		data: args,
-		success(result, status, xhr) {
-			console.log(result);
-			console.log(status);
-			console.log(xhr);
-			if (!IsThisNullOrEmpty(actionForSuccess)) actionForSuccess();
-		},
-		error(xhr, status, error) {
-			console.log(error);
-			console.log(status);
-			console.log(xhr);
-			if (!IsThisNullOrEmpty(actionForError)) actionForError();
-		},
-	});
+    $.ajax({
+        url: callURL,
+        type: "POST",
+        async: isAsync,
+        dataType: "json",
+        data: args,
+        success(result, status, xhr) {
+            console.log(result);
+            console.log(status);
+            console.log(xhr);
+            if (showNotify)
+                DevExpress.ui.notify("Thành công", "success", 3000);
+
+            if (IsFunction(actionSuccess))
+                actionSuccess(result);
+        },
+        error(xhr, status, error) {
+            console.log("xhr: " + xhr);
+            console.log("status: " + status);
+            console.log("error: " + error);
+            DevExpress.ui.notify("Thất bại: " + xhr, "error", 3000);
+
+            if (IsFunction(actionFail))
+                actionFail(xhr);
+        },
+    });
+}
+
+// HIỂN THỊ THỜI GIAN THỰC ---------------------------------------------------------------------------------------------------
+setInterval(() => $("#digitalClock")?.text(CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A"))), 500);
+
+// MÀN HÌNH LOADING ---------------------------------------------------------------------------------------------------
+const appLoadingPanel = $("#appLoadingPanel").dxLoadPanel({
+    focusStateEnabled: true, // Chỉ định xem thành phần UI có thể được tập trung hay không
+    hideOnOutsideClick: true, // Ẩn nếu click vào vùng ngoài
+    hideOnParentScroll: true, // Ẩn nếu cuộn phần tử cha
+    hint: "Đang tải dữ liệu . . .", // Chỉ định văn bản cho gợi ý xuất hiện khi người dùng tạm dừng trên thành phần UI
+    hoverStateEnabled: true, // Chỉ định xem thành phần giao diện người dùng có thay đổi trạng thái hay không khi người dùng tạm dừng trên đó
+    indicatorSrc: "/content/images/loading.gif", // Nguồn thay cho hình ảnh mặc định
+    message: "Đang tải dữ liệu . . .",
+    position: { my: "center", at: "center", of: "#mainContent" }, // Vị trí hiển thị
+    shading: true, // Tạo bóng nền hay không
+    shadingColor: "rgba(0,0,0,0.25)", // Màu bóng nền
+    showIndicator: true, // Hiện ảnh loading
+    showPane: true, // Hiện bảng
+}).dxLoadPanel("instance");
+
+$(document)
+    .ajaxStart(() => {
+        $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
+        appLoadingPanel?.show();
+    })
+    .ajaxStop(() => {
+        $("#notifyText")?.text("");
+        appLoadingPanel?.hide();
+    });
+
+// KHAI BÁO CÁC BIẾN FORM ĐĂNG NHẬP ---------------------------------------------------------------------------------------------------
+const URL_Login = "/Account/Login";
+const URL_Logout = "/Account/Logout";
+
+// CÁC HÀM HỖ TRỢ FORM ĐĂNG NHẬP ---------------------------------------------------------------------------------------------------
+/**
+ * Thay đổi chế độ text và password
+ * @param {string} id Tên trường cần thay đổi
+ */
+function ChangeTextMode(id) {
+    const txtMode = dxForm_Account?.getEditor(id);
+    const iconShow = txtMode?.getButton("showText");
+    if (txtMode?.option("mode") === "text") {
+        txtMode?.option("mode", "password");
+        iconShow?.option("icon", "eyeopen");
+    } else {
+        txtMode?.option("mode", "text");
+        iconShow?.option("icon", "eyeclose");
+    }
 }
 
 // FORM ĐĂNG NHẬP ---------------------------------------------------------------------------------------------------
-const dxForm_Account = $("#dxForm_Account")
-	?.dxForm({
-		items: [
-			{
-				label: { text: "Tên đăng nhập" },
-				dataField: "TenDangNhap",
-				editorOptions: {
-					mode: "password",
-					buttons: [
-						{
-							name: "showText",
-							location: "after",
-							options: {
-								stylingMode: "text",
-								icon: "eyeopen",
-								onClick: () => ChangeTextMode("TenDangNhap"),
-							},
-						},
-					],
-				},
-				validationRules: [
-					{
-						type: "required",
-						message: "Tên đăng nhập là bắt buộc",
-					},
-				],
-			},
-			{
-				label: { text: "Mật khẩu" },
-				dataField: "MatKhau",
-				editorOptions: {
-					mode: "password",
-					buttons: [
-						{
-							name: "showText",
-							location: "after",
-							options: {
-								stylingMode: "text",
-								icon: "eyeopen",
-								onClick: () => ChangeTextMode("MatKhau"),
-							},
-						},
-					],
-				},
-				validationRules: [
-					{
-						type: "required",
-						message: "Mật khẩu là bắt buộc",
-					},
-				],
-			},
-			{
-				itemType: "button",
-				buttonOptions: {
-					icon: "login",
-					stylingMode: "contained",
-					text: "Đăng nhập",
-					type: "success",
-					width: "100%",
-					onClick: () => {
-						if (dxForm_Account.validate().isValid)
-							PostData(urlLogin, false, {
-								userName: GetEditorValue(dxForm_Account, "TenDangNhap"),
-								userPass: GetEditorValue(dxForm_Account, "MatKhau"),
-							});
-					},
-				},
-			},
-		],
-	})
-	.dxForm("instance");
+const dxForm_Account = $("#dxForm_Account")?.dxForm({
+    items: [{
+        label: { text: "Tên đăng nhập" },
+        dataField: "TenDangNhap",
+        editorOptions: {
+            mode: "password",
+            buttons: [{
+                name: "showText",
+                location: "after",
+                options: {
+                    stylingMode: "text",
+                    icon: "eyeopen",
+                    onClick: () => ChangeTextMode("TenDangNhap"),
+                },
+            }],
+        },
+        validationRules: [{
+            type: "required",
+            message: "Tên đăng nhập là bắt buộc",
+        }],
+    },
+    {
+        label: { text: "Mật khẩu" },
+        dataField: "MatKhau",
+        editorOptions: {
+            mode: "password",
+            buttons: [{
+                name: "showText",
+                location: "after",
+                options: {
+                    stylingMode: "text",
+                    icon: "eyeopen",
+                    onClick: () => ChangeTextMode("MatKhau"),
+                },
+            }],
+        },
+        validationRules: [{
+            type: "required",
+            message: "Tên đăng nhập là bắt buộc",
+        }, {
+            type: "pattern",
+            pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
+            message: "Mật khẩu chứa ít nhất 8 ký tự gồm: chữ hoa, chữ thường, số và ký tự đặc biệt",
+        }],
+    },
+    {
+        itemType: "button",
+        buttonOptions: {
+            icon: "login",
+            stylingMode: "contained",
+            text: "Đăng nhập",
+            type: "success",
+            width: "100%",
+            onClick: () => {
+                if (dxForm_Account.validate().isValid)
+                    CallServer_POST(URL_Login, true, false, {
+                        userName: dxForm_Account?.getEditor("TenDangNhap")?.option("value"),
+                        userPass: dxForm_Account?.getEditor("MatKhau")?.option("value"),
+                    });
+            },
+        },
+    }],
+}).dxForm("instance");

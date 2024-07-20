@@ -8,31 +8,35 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="~/content/images/favicon.ico">
     <!-- Bootstrap theme -->
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
     <!-- Font Awesome theme -->
-    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true" />
     <!-- DevExtreme theme -->
-    <link rel="stylesheet" href="~/lib/devextreme-dist/css/dx.fluent.blue.dark.compact.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/devextreme-dist/css/dx.material.blue.dark.compact.min.css" asp-append-version="true" />
     <!-- App theme -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <!------------------------------------ Libraries ------------------------------------>
     <!-- Axios library -->
-    <script type="text/javascript" src="~/lib/axios/axios.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/axios/axios.min.js" asp-append-version="true"></script>
     <!-- Bootstrap library -->
-    <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.bundle.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <!-- Font Awesome library -->
-    <script type="text/javascript" src="~/lib/font-awesome/js/all.js" data-auto-replace-svg="nest" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/font-awesome/js/all.min.js" data-auto-replace-svg="nest" asp-append-version="true"></script>
     <!-- Excel xlsx library -->
     <script type="text/javascript" src="~/lib/xlsx/xlsx.full.min.js" asp-append-version="true"></script>
     <!-- Jquery library -->
-    <script type="text/javascript" src="~/lib/jquery/jquery.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
     <!-- Jquery validate library -->
-    <script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
     <!-- Moment.js library -->
-    <script type="text/javascript" src="~/lib/momentjs/moment.js" asp-append-version="true"></script>
-    <script type="text/javascript" src="~/lib/momentjs/locale/vi.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/momentjs/moment-with-locales.min.js" asp-append-version="true"></script>
     <!-- DevExtreme library -->
-    <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.js" asp-append-version="true"></script>
+    <environment include="Development">
+        <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.debug.min.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.min.js" asp-append-version="true"></script>
+    </environment>
 </head>
 <body class="dx-viewport">
     <header>
@@ -62,7 +66,7 @@
     </header>
 
     <main id="mainContent" role="main" class="container-fluid">
-        <div id="dxLoadingPanel"></div>
+        <div id="appLoadingPanel"></div>
         @RenderBody()
     </main>
 
