@@ -36,6 +36,7 @@ namespace WebAppManager.Controllers
         /// </summary>
         /// <returns>Xoá thông tin đăng nhập</returns>
         [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -54,6 +55,7 @@ namespace WebAppManager.Controllers
             // Kiểm tra dữ liệu đầu vào
             if (!ModelState.IsValid || string.IsNullOrEmpty(taiKhoan.UserName) || string.IsNullOrEmpty(taiKhoan.UserPass))
                 return await Task.Run(() => BadRequest(CommonMessages.ParamsIsNullOrEmpty));
+
             return await VerifyAccount(taiKhoan);
         }
 
@@ -131,7 +133,7 @@ namespace WebAppManager.Controllers
                 // Tạo các thông tin người dùng
                 List<Claim> claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, record.TenDangNhap),
+                    new Claim(ClaimTypes.Name, taiKhoan.UserName),
                     new Claim("LoggedInAt", DateTime.Now.ToString()),
                 };
 
@@ -145,7 +147,10 @@ namespace WebAppManager.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
                 // Chuyển hướng trang về home
-                return RedirectToAction("Index", "Home");
+                if (string.IsNullOrEmpty(taiKhoan.LastUrl))
+                    return await Task.Run(() => RedirectToAction("Index", "Home"));
+                else
+                    return await Task.Run(() => Redirect(taiKhoan.LastUrl));
             }
             catch (Exception) { return await Task.Run(() => Unauthorized(MSG_AccountUnauthorized)); }
         }

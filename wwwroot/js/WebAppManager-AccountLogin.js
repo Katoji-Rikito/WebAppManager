@@ -79,8 +79,9 @@ const dxForm_Account = $("#dxForm_Account")?.dxForm({
             onClick: () => {
                 if (dxForm_Account.validate().isValid)
                     CallServer_POST(URL_Login, true, {
-                        userName: dxForm_Account?.getEditor("TenDangNhap")?.option("value")?.trim()?.toUpperCase(),
-                        userPass: dxForm_Account?.getEditor("MatKhau")?.option("value")?.trim(),
+                        UserName: dxForm_Account?.getEditor("TenDangNhap")?.option("value")?.trim()?.toUpperCase(),
+                        UserPass: dxForm_Account?.getEditor("MatKhau")?.option("value")?.trim(),
+                        LastUrl: (new URLSearchParams(window?.location?.search))?.get("ReturnUrl"), // Lấy đường dẫn trước khi trỏ về trang đăng nhập
                     });
             },
         },
