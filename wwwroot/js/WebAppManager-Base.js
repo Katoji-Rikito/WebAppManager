@@ -3,6 +3,9 @@
 // Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
+// KHAI BÁO CÁC BIẾN ---------------------------------------------------------------------------------------------------
+const requestController = new AbortController();
+
 // CÁC THIẾT LẬP MẶC ĐỊNH ---------------------------------------------------------------------------------------------------
 /**
  * Thêm padding-top cho phần hiển thị nội dung
@@ -71,90 +74,69 @@ function CapitalizeString(value) {
 
 // CÁC HÀM HỖ TRỢ GỌI SERVER ---------------------------------------------------------------------------------------------------
 /**
- * Hàm gọi dữ liệu từ server
+ * Hàm lấy dữ liệu từ server
  * @param {string} callURL URL cần gọi
- * @param {boolean} isAsync Thực hiện bất đồng bộ hay không? True là có
  * @param {boolean} showNotify Hiện thông báo không? True là hiện
  * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
  * @param {function} actionFail Hàm sẽ thực thi nếu thất bại
+ * @returns Thực hiện lấy dữ liệu về server
  */
 function CallServer_GET(
     callURL = "",
-    isAsync = true,
     showNotify = false,
     actionSuccess = null,
-    actionFail = null,
+    actionFail = null
 ) {
-    $.ajax({
-        url: callURL,
-        type: "GET",
-        async: isAsync,
-        dataType: "json",
-        success(result, status, xhr) {
-            //console.log(result);
-            //console.log(status);
-            //console.log(xhr);
+    return axios.get(callURL, { signal: requestController.signal })
+        .then((res) => {
+            console.log(res);
             if (showNotify)
                 DevExpress.ui.notify("Thành công", "success", 3000);
-
+            // Chạy hàm truyền vào khi thành công (nếu có)
             if (IsFunction(actionSuccess))
-                actionSuccess(result);
-        },
-        error(xhr, status, error) {
-            console.log("xhr: " + xhr);
-            console.log("status: " + status);
-            console.log("error: " + error);
-            DevExpress.ui.notify("Thất bại: " + xhr, "error", 3000);
-
+                actionSuccess(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+            DevExpress.ui.notify(`Thất bại: ${err.response.status} ${err.response.statusText} - ${err.response.data}`, "error", 3000);
+            // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail))
-                actionFail(xhr);
-        },
-    });
+                actionFail(err);
+        });
 }
 
 /**
  * Hàm gửi dữ liệu về server
  * @param {string} callURL URL cần gọi
- * @param {boolean} isAsync Thực hiện bất đồng bộ hay không? True là có
  * @param {boolean} showNotify Hiện thông báo không? True là hiện
- * @param {object} args Tham số cần gửi về server
+ * @param {object} inputArgs Tham số cần gửi về server
  * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
  * @param {function} actionFail Hàm sẽ thực thi nếu thất bại
+ * @returns Thực hiện gửi dữ liệu về server
  */
 function CallServer_POST(
     callURL = "",
-    isAsync = true,
     showNotify = false,
-    args = [],
+    inputArgs = {},
     actionSuccess = null,
-    actionFail = null,
+    actionFail = null
 ) {
-    $.ajax({
-        url: callURL,
-        type: "POST",
-        async: isAsync,
-        dataType: "json",
-        data: args,
-        success(result, status, xhr) {
-            console.log(result);
-            console.log(status);
-            console.log(xhr);
+    return axios.post(callURL, inputArgs, { headers: { "Content-Type": "application/json" }, signal: requestController.signal })
+        .then((res) => {
+            console.log(res);
             if (showNotify)
-                DevExpress.ui.notify("Thành công", "success", 3000);
-
+                DevExpress.ui.notify(`(${res.status} ${res.statusText}) Thành công`, "success", 3000);
+            // Chạy hàm truyền vào khi thành công (nếu có)
             if (IsFunction(actionSuccess))
-                actionSuccess(result);
-        },
-        error(xhr, status, error) {
-            console.log("xhr: " + xhr);
-            console.log("status: " + status);
-            console.log("error: " + error);
-            DevExpress.ui.notify("Thất bại: " + xhr, "error", 3000);
-
+                actionSuccess(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+            DevExpress.ui.notify(`Thất bại (${err.response.status} ${err.response.statusText}) với dữ liệu trả về: ${JSON.stringify(err.response.data)}`, "error", 3000);
+            // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail))
-                actionFail(xhr);
-        },
-    });
+                actionFail(err);
+        });
 }
 
 // HIỂN THỊ THỜI GIAN THỰC ---------------------------------------------------------------------------------------------------
@@ -185,89 +167,3 @@ $(document)
         $("#notifyText")?.text("");
         appLoadingPanel?.hide();
     });
-
-// KHAI BÁO CÁC BIẾN FORM ĐĂNG NHẬP ---------------------------------------------------------------------------------------------------
-const URL_Login = "/Account/Login";
-const URL_Logout = "/Account/Logout";
-
-// CÁC HÀM HỖ TRỢ FORM ĐĂNG NHẬP ---------------------------------------------------------------------------------------------------
-/**
- * Thay đổi chế độ text và password
- * @param {string} id Tên trường cần thay đổi
- */
-function ChangeTextMode(id) {
-    const txtMode = dxForm_Account?.getEditor(id);
-    const iconShow = txtMode?.getButton("showText");
-    if (txtMode?.option("mode") === "text") {
-        txtMode?.option("mode", "password");
-        iconShow?.option("icon", "eyeopen");
-    } else {
-        txtMode?.option("mode", "text");
-        iconShow?.option("icon", "eyeclose");
-    }
-}
-
-// FORM ĐĂNG NHẬP ---------------------------------------------------------------------------------------------------
-const dxForm_Account = $("#dxForm_Account")?.dxForm({
-    items: [{
-        label: { text: "Tên đăng nhập" },
-        dataField: "TenDangNhap",
-        editorOptions: {
-            mode: "password",
-            buttons: [{
-                name: "showText",
-                location: "after",
-                options: {
-                    stylingMode: "text",
-                    icon: "eyeopen",
-                    onClick: () => ChangeTextMode("TenDangNhap"),
-                },
-            }],
-        },
-        validationRules: [{
-            type: "required",
-            message: "Tên đăng nhập là bắt buộc",
-        }],
-    },
-    {
-        label: { text: "Mật khẩu" },
-        dataField: "MatKhau",
-        editorOptions: {
-            mode: "password",
-            buttons: [{
-                name: "showText",
-                location: "after",
-                options: {
-                    stylingMode: "text",
-                    icon: "eyeopen",
-                    onClick: () => ChangeTextMode("MatKhau"),
-                },
-            }],
-        },
-        validationRules: [{
-            type: "required",
-            message: "Tên đăng nhập là bắt buộc",
-        }, {
-            type: "pattern",
-            pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
-            message: "Mật khẩu chứa ít nhất 8 ký tự gồm: chữ hoa, chữ thường, số và ký tự đặc biệt",
-        }],
-    },
-    {
-        itemType: "button",
-        buttonOptions: {
-            icon: "login",
-            stylingMode: "contained",
-            text: "Đăng nhập",
-            type: "success",
-            width: "100%",
-            onClick: () => {
-                if (dxForm_Account.validate().isValid)
-                    CallServer_POST(URL_Login, true, false, {
-                        userName: dxForm_Account?.getEditor("TenDangNhap")?.option("value"),
-                        userPass: dxForm_Account?.getEditor("MatKhau")?.option("value"),
-                    });
-            },
-        },
-    }],
-}).dxForm("instance");

@@ -4,11 +4,11 @@ using WebAppManager.Repositories.Interfaces;
 
 namespace WebAppManager.Repositories
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork(WebappmanagerContext context) : IUnitOfWork
     {
         #region Private Fields
 
-        private readonly WebappmanagerContext _context;
+        private readonly WebappmanagerContext _context = context;
 
         private readonly Dictionary<Type, object> _repoDict = new Dictionary<Type, object>();
 
@@ -17,11 +17,7 @@ namespace WebAppManager.Repositories
         private bool disposed = false;
 
         #endregion Private Fields
-
         #region Public Constructors
-
-        public UnitOfWork(WebappmanagerContext context)
-        { _context = context; }
 
         #endregion Public Constructors
 
