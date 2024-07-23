@@ -60,11 +60,7 @@ namespace WebAppManager.Filters
 
         #region Private Methods
 
-        /// <summary>
-        /// Chuyển IDictionary sang IDictionary<string, object>
-        /// </summary>
-        /// <param name="data">Dữ liệu cần chuyển</param>
-        /// <returns>IDictionary<string, object></returns>
+        /// <summary> Chuyển IDictionary sang IDictionary<string, object> </summary> <param name="data">Dữ liệu cần chuyển</param> <returns>IDictionary<string, object></returns>
         private IDictionary<string, object> ConvertToGenericDictionary(IDictionary? data = null)
         {
             var result = new Dictionary<string, object>();

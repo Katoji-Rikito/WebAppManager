@@ -11,6 +11,7 @@ const requestController = new AbortController();
  * Thêm padding-top cho phần hiển thị nội dung
  */
 document.addEventListener("DOMContentLoaded", function () {
+
     // Điều chỉnh padding-top của nội dung chính
     const adjustMainPaddingTop = () =>
         $("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
@@ -30,7 +31,23 @@ moment.locale("vi");
 /**
  * Loại bỏ thông báo bản quyền DevExtreme 24.1
  */
-//$(document).ready(() => $("#Layer_1").click());
+$(document).ready(() => $("#Layer_1")?.click());
+
+// MÀN HÌNH LOADING ---------------------------------------------------------------------------------------------------
+const appLoadingPanel = $("#appLoadingPanel").dxLoadPanel({
+    focusStateEnabled: true, // Chỉ định xem thành phần UI có thể được tập trung hay không
+    hideOnOutsideClick: true, // Ẩn nếu click vào vùng ngoài
+    hideOnParentScroll: true, // Ẩn nếu cuộn phần tử cha
+    hint: "Đang tải dữ liệu . . .", // Chỉ định văn bản cho gợi ý xuất hiện khi người dùng tạm dừng trên thành phần UI
+    hoverStateEnabled: true, // Chỉ định xem thành phần giao diện người dùng có thay đổi trạng thái hay không khi người dùng tạm dừng trên đó
+    indicatorSrc: "/content/images/loading.gif", // Nguồn thay cho hình ảnh mặc định
+    message: "Đang tải dữ liệu . . .",
+    position: { my: "center", at: "center", of: "#mainContent" }, // Vị trí hiển thị
+    shading: true, // Tạo bóng nền hay không
+    shadingColor: "rgba(0,0,0,0.25)", // Màu bóng nền
+    showIndicator: true, // Hiện ảnh loading
+    showPane: true, // Hiện bảng
+}).dxLoadPanel("instance");
 
 // CÁC HÀM HỖ TRỢ KIỂM TRA ---------------------------------------------------------------------------------------------------
 /**
@@ -87,11 +104,14 @@ function CallServer_GET(
     actionSuccess = null,
     actionFail = null
 ) {
+    $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
+    appLoadingPanel?.show();
     return axios.get(callURL, { signal: requestController.signal })
         .then((res) => {
             console.log(res);
             if (showNotify)
                 DevExpress.ui.notify("Thành công", "success", 3000);
+
             // Chạy hàm truyền vào khi thành công (nếu có)
             if (IsFunction(actionSuccess))
                 actionSuccess(res.data);
@@ -99,9 +119,13 @@ function CallServer_GET(
         .catch((err) => {
             console.log(err);
             DevExpress.ui.notify(`Thất bại: ${err.response.status} ${err.response.statusText} - ${err.response.data}`, "error", 3000);
+
             // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail))
                 actionFail(err);
+        }).finally(function () {
+            $("#notifyText")?.text("");
+            appLoadingPanel?.hide();
         });
 }
 
@@ -121,11 +145,14 @@ function CallServer_POST(
     actionSuccess = null,
     actionFail = null
 ) {
+    $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
+    appLoadingPanel?.show();
     return axios.post(callURL, inputArgs, { headers: { "Content-Type": "application/json" }, signal: requestController.signal })
         .then((res) => {
             console.log(res);
             if (showNotify)
                 DevExpress.ui.notify(`(${res.status} ${res.statusText}) Thành công`, "success", 3000);
+
             // Chạy hàm truyền vào khi thành công (nếu có)
             if (IsFunction(actionSuccess))
                 actionSuccess(res.data);
@@ -133,37 +160,18 @@ function CallServer_POST(
         .catch((err) => {
             console.log(err);
             DevExpress.ui.notify(`Thất bại (${err.response.status} ${err.response.statusText}) với dữ liệu trả về: ${JSON.stringify(err.response.data)}`, "error", 3000);
+
             // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail))
                 actionFail(err);
+        }).finally(function () {
+            $("#notifyText")?.text("");
+            appLoadingPanel?.hide();
         });
 }
 
-// HIỂN THỊ THỜI GIAN THỰC ---------------------------------------------------------------------------------------------------
+// THANH ĐIỀU HƯỚNG =================================================================================
+// NÚT MENU
+
+// HIỂN THỊ THỜI GIAN THỰC
 setInterval(() => $("#digitalClock")?.text(CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A"))), 500);
-
-// MÀN HÌNH LOADING ---------------------------------------------------------------------------------------------------
-const appLoadingPanel = $("#appLoadingPanel").dxLoadPanel({
-    focusStateEnabled: true, // Chỉ định xem thành phần UI có thể được tập trung hay không
-    hideOnOutsideClick: true, // Ẩn nếu click vào vùng ngoài
-    hideOnParentScroll: true, // Ẩn nếu cuộn phần tử cha
-    hint: "Đang tải dữ liệu . . .", // Chỉ định văn bản cho gợi ý xuất hiện khi người dùng tạm dừng trên thành phần UI
-    hoverStateEnabled: true, // Chỉ định xem thành phần giao diện người dùng có thay đổi trạng thái hay không khi người dùng tạm dừng trên đó
-    indicatorSrc: "/content/images/loading.gif", // Nguồn thay cho hình ảnh mặc định
-    message: "Đang tải dữ liệu . . .",
-    position: { my: "center", at: "center", of: "#mainContent" }, // Vị trí hiển thị
-    shading: true, // Tạo bóng nền hay không
-    shadingColor: "rgba(0,0,0,0.25)", // Màu bóng nền
-    showIndicator: true, // Hiện ảnh loading
-    showPane: true, // Hiện bảng
-}).dxLoadPanel("instance");
-
-$(document)
-    .ajaxStart(() => {
-        $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
-        appLoadingPanel?.show();
-    })
-    .ajaxStop(() => {
-        $("#notifyText")?.text("");
-        appLoadingPanel?.hide();
-    });

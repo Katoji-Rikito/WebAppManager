@@ -12,7 +12,7 @@
     <!-- Font Awesome theme -->
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true" />
     <!-- DevExtreme theme -->
-    <link rel="stylesheet" href="~/lib/devextreme-dist/css/dx.material.blue.dark.compact.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/devextreme-dist/css/dx.fluent.blue.dark.compact.min.css" asp-fallback-href="~/lib/devextreme-dist/css/dx.material.blue.dark.compact.min.css" asp-append-version="true" />
     <!-- App theme -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <!------------------------------------ Libraries ------------------------------------>
@@ -43,20 +43,18 @@
         <nav id="navbarApp" class="navbar navbar-expand py-0 navbar-dark bg-dark fixed-top justify-content-between">
             @* Menu *@
             <div class="nav-item dropdown">
-                <button id="MenuApp" type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-bars" ></i>
-                    @ViewData["Title"]
-                    <span id="notifyText" />
+                <button id="MenuApp" type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-bars"></i> @ViewData["Title"]<span id="notifyText" />
                 </button>
                 <ul id="SubMenuApp" class="dropdown-menu bg-dark overflow-auto">
-                    <li><h5 class="dropdown-header">Dropdown header 1</h5></li>
+                    <li><h5 class="dropdown-header"><i class="fa fa-home"></i> Trang chủ</h5></li>
                     <li>
-                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        <a class="nav-link dropdown-item" href="#">Another action</a>
+                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-car-side"></i> Về trang chủ</a>
+                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa fa-door-open"></i> Thoát tài khoản</a>
                     </li>
-                    <li><h5 class="dropdown-header">Dropdown header 2</h5></li>
+                    <li><h5 class="dropdown-header"><i class="fa fa-compass"></i> Menu ứng dụng</h5></li>
                     <li>
-                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a class="nav-link dropdown-item" href="#"><i class="fa fa-map-location-dot"></i> Menu con 1</a>
+                        <a class="nav-link dropdown-item" href="#"><i class="fa fa-map-location-dot"></i> Menu con 2</a>
                     </li>
                 </ul>
             </div>

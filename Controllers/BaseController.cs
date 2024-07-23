@@ -1,7 +1,6 @@
 ﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using WebAppManager.Models;
 using WebAppManager.Repositories.Interfaces;
 
@@ -18,11 +17,17 @@ namespace WebAppManager.Controllers
 
         #endregion Private Fields
 
+
+
         #region Protected Properties
 
         protected IUnitOfWork UnitOfWork => _unitOfWork ??= HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
 
         #endregion Protected Properties
+
+
+
+        #region Public Methods
 
         public async Task<IActionResult> GetList(DataSourceLoadOptions loadOptions)
         {
@@ -34,5 +39,7 @@ namespace WebAppManager.Controllers
         {
             return await Task.Run(View);
         }
+
+        #endregion Public Methods
     }
 }

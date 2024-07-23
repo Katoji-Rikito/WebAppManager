@@ -5,13 +5,17 @@
 /// </summary>
 public partial class DsNguontien : BaseEntities
 {
-    public ulong IdNhomTien { get; set; }
-
-    public string TenNguonTien { get; set; } = null!;
+    #region Public Properties
 
     public ulong DonGia { get; set; }
 
-    public ulong SoLuong { get; set; }
+    public ulong IdNhomTien { get; set; }
 
     public virtual DmTagnhom IdNhomTienNavigation { get; set; } = null!;
+
+    public ulong SoLuong { get; set; }
+
+    public string TenNguonTien { get; set; } = null!;
+
+    #endregion Public Properties
 }

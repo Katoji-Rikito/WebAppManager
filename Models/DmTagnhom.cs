@@ -5,10 +5,13 @@
 /// </summary>
 public partial class DmTagnhom : BaseEntities
 {
+    #region Public Properties
 
-    public string TenTagNhom { get; set; } = null!;
+    public virtual ICollection<DsNguontien> DsNguontiens { get; set; } = [];
 
     public string? GhiChu { get; set; }
 
-    public virtual ICollection<DsNguontien> DsNguontiens { get; set; } = [];
+    public string TenTagNhom { get; set; } = null!;
+
+    #endregion Public Properties
 }

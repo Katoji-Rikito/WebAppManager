@@ -15,17 +15,19 @@ namespace WebAppManager.Controllers
         #region Private Fields
 
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
         private readonly HashType pwdHashType = HashType.SHA512;
-        private readonly string MSG_AccountUnauthorized = "Thông tin đăng nhập không hợp lệ";
 
         #endregion Private Fields
-        #region Public Constructors
-
-        #endregion Public Constructors
 
 
 
         #region Public Methods
+
+        /// <summary>
+        /// View đăng nhập
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             return await Task.Run(View);
@@ -34,27 +36,27 @@ namespace WebAppManager.Controllers
         /// <summary>
         /// Đăng xuất ứng dụng
         /// </summary>
-        /// <returns>Xoá thông tin đăng nhập</returns>
+        /// <returns> Xoá thông tin đăng nhập </returns>
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return await Task.Run(() => RedirectToAction("Index", "Account"));
+            return await Task.Run(() => RedirectToAction("Index", "Home"));
         }
 
         /// <summary>
         /// Đăng nhập ứng dụng
         /// </summary>
-        /// <param name="userName">Tên đăng nhập</param>
-        /// <param name="userPass">Mật khẩu</param>
-        /// <returns>Kết quả đăng nhập</returns>
+        /// <param name="userName"> Tên đăng nhập </param>
+        /// <param name="userPass"> Mật khẩu </param>
+        /// <returns> Kết quả đăng nhập </returns>
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] ThongTinTaiKhoanDto taiKhoan)
         {
             // Kiểm tra dữ liệu đầu vào
             if (!ModelState.IsValid || string.IsNullOrEmpty(taiKhoan.UserName) || string.IsNullOrEmpty(taiKhoan.UserPass))
-                return await Task.Run(() => BadRequest(CommonMessages.ParamsIsNullOrEmpty));
+                throw new Exception(CommonMessages.ParamsIsNullOrEmpty);
 
             return await VerifyAccount(taiKhoan);
         }
@@ -64,12 +66,13 @@ namespace WebAppManager.Controllers
 
 
         #region Private Methods
+
         /// <summary>
         /// Tạo hoặc cập nhật tài khoản đăng nhập
         /// </summary>
-        /// <param name="userName">Tên tài khoản cần tạo hoặc cập nhật</param>
-        /// <param name="userPass">Mật khẩu đăng nhập</param>
-        /// <returns></returns>
+        /// <param name="userName"> Tên tài khoản cần tạo hoặc cập nhật </param>
+        /// <param name="userPass"> Mật khẩu đăng nhập </param>
+        /// <returns> </returns>
         [Authorize]
         private async Task CreateOrUpdateAccount(ThongTinTaiKhoanDto taiKhoan)
         {
@@ -112,8 +115,8 @@ namespace WebAppManager.Controllers
         /// <summary>
         /// Kiểm tra tài khoản đăng nhập ứng dụng
         /// </summary>
-        /// <param name="taiKhoan">Thông tin tài khoản đăng nhập</param>
-        /// <returns>Kết quả kiểm tra: True nếu tài khoản hợp lệ</returns>
+        /// <param name="taiKhoan"> Thông tin tài khoản đăng nhập </param>
+        /// <returns> Kết quả kiểm tra: True nếu tài khoản hợp lệ </returns>
         private async Task<IActionResult> VerifyAccount(ThongTinTaiKhoanDto taiKhoan)
         {
             // Xử lý chuỗi thô
@@ -129,8 +132,7 @@ namespace WebAppManager.Controllers
                 // So sánh mật khẩu vừa nhập với dữ liệu từ CSDL
                 if (!BCrypt.Net.BCrypt.EnhancedVerify(taiKhoan.UserPass, record.MatKhau, pwdHashType)) throw new Exception();
 
-                // Đăng nhập thành công
-                // Tạo các thông tin người dùng
+                // Đăng nhập thành công Tạo các thông tin người dùng
                 List<Claim> claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, taiKhoan.UserName),
@@ -146,13 +148,10 @@ namespace WebAppManager.Controllers
                 // Tạo phiên đăng nhập
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                // Chuyển hướng trang về home
-                if (string.IsNullOrEmpty(taiKhoan.LastUrl))
-                    return await Task.Run(() => RedirectToAction("Index", "Home"));
-                else
-                    return await Task.Run(() => Redirect(taiKhoan.LastUrl));
+                // Chuyển hướng trang về trang trước đó hoặc home
+                return await Task.Run(() => Ok(string.IsNullOrEmpty(taiKhoan.LastUrl) ? "/" : taiKhoan.LastUrl));
             }
-            catch (Exception) { return await Task.Run(() => Unauthorized(MSG_AccountUnauthorized)); }
+            catch (Exception) { throw new Exception(CommonMessages.AccountUnauthorized); }
         }
 
         #endregion Private Methods

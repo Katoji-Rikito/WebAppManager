@@ -17,9 +17,6 @@ namespace WebAppManager.Repositories
         private bool disposed = false;
 
         #endregion Private Fields
-        #region Public Constructors
-
-        #endregion Public Constructors
 
 
 
