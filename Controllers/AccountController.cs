@@ -111,7 +111,7 @@ namespace WebAppManager.Controllers
             await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync();
 
-            return await Task.Run(() => Created());
+            return await Task.Run(() => Created(string.Empty, record));
         }
 
         /// <summary>

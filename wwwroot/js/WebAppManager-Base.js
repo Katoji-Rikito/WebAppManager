@@ -92,7 +92,7 @@ function CapitalizeString(value) {
 // CÁC HÀM HỖ TRỢ GỌI SERVER ---------------------------------------------------------------------------------------------------
 /**
  * Hàm lấy dữ liệu từ server
- * @param {string} callURL URL cần gọi
+ * @param {string} callURL URL cần gọi, lưu ý bỏ đuôi Async
  * @param {boolean} showNotify Hiện thông báo không? True là hiện
  * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
  * @param {function} actionFail Hàm sẽ thực thi nếu thất bại
@@ -137,7 +137,7 @@ function CallServer_GET(
 
 /**
  * Hàm gửi dữ liệu về server
- * @param {string} callURL URL cần gọi
+ * @param {string} callURL URL cần gọi, lưu ý bỏ đuôi Async
  * @param {boolean} showNotify Hiện thông báo không? True là hiện
  * @param {object} inputArgs Tham số cần gửi về server
  * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
