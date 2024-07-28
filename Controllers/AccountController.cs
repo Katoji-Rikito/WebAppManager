@@ -57,7 +57,7 @@ namespace WebAppManager.Controllers
         {
             // Kiểm tra dữ liệu đầu vào
             if (!ModelState.IsValid || string.IsNullOrEmpty(taiKhoan.UserName) || string.IsNullOrEmpty(taiKhoan.UserPass))
-                throw new Exception(CommonMessages.ParamsIsNullOrEmpty);
+                return await Task.Run(() => BadRequest(CommonMessages.ParamsIsNullOrEmpty));
 
             return await VerifyAccount(taiKhoan);
         }
@@ -75,11 +75,11 @@ namespace WebAppManager.Controllers
         /// <param name="userPass"> Mật khẩu đăng nhập </param>
         /// <returns> </returns>
         [Authorize]
-        private async Task CreateOrUpdateAccount(ThongTinTaiKhoanDto taiKhoan)
+        private async Task<IActionResult> CreateOrUpdateAccount(ThongTinTaiKhoanDto taiKhoan)
         {
             // Xử lý dữ liệu trước khi nấu
             if (!ModelState.IsValid || string.IsNullOrEmpty(taiKhoan.UserName) || string.IsNullOrEmpty(taiKhoan.UserPass))
-                throw new Exception(CommonMessages.ParamsIsNullOrEmpty);
+                return await Task.Run(() => BadRequest(CommonMessages.ParamsIsNullOrEmpty));
             taiKhoan.UserName = taiKhoan.UserName.Trim().ToUpper();
             taiKhoan.UserPass = taiKhoan.UserPass.Trim();
 
@@ -110,6 +110,8 @@ namespace WebAppManager.Controllers
             // Lưu lại vào CSDL
             await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitAsync();
+
+            return await Task.Run(() => Created());
         }
 
         /// <summary>
@@ -119,41 +121,39 @@ namespace WebAppManager.Controllers
         /// <returns> Kết quả kiểm tra: True nếu tài khoản hợp lệ </returns>
         private async Task<IActionResult> VerifyAccount(ThongTinTaiKhoanDto taiKhoan)
         {
-            try
-            {
-                // Tạo trước một số thông tin người dùng
-                List<Claim> claims = new List<Claim>
+            // Tạo trước một số thông tin người dùng
+            List<Claim> claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, taiKhoan.UserName),
                 };
 
-                // Xử lý chuỗi thô
-                taiKhoan.UserName = taiKhoan.UserName.Trim().ToUpper();
-                taiKhoan.UserPass = taiKhoan.UserPass.Trim();
+            // Xử lý chuỗi thô
+            taiKhoan.UserName = taiKhoan.UserName.Trim().ToUpper();
+            taiKhoan.UserPass = taiKhoan.UserPass.Trim();
 
-                // Lấy thông tin tài khoản trong CSDL
-                DsTaikhoan? record = await _unitOfWork.GetRepository<DsTaikhoan>().GetDataAsync(r => r.IsAble && r.TenDangNhap == taiKhoan.UserName);
-                if (record is null) throw new Exception();
+            // Lấy thông tin tài khoản trong CSDL
+            DsTaikhoan? record = await _unitOfWork.GetRepository<DsTaikhoan>().GetDataAsync(r => r.IsAble && r.TenDangNhap == taiKhoan.UserName);
+            if (record is null)
+                return await Task.Run(() => Unauthorized(CommonMessages.AccountUnauthorized));
 
-                // So sánh mật khẩu vừa nhập với dữ liệu từ CSDL
-                if (!BCrypt.Net.BCrypt.EnhancedVerify(taiKhoan.UserPass, record.MatKhau, pwdHashType)) throw new Exception();
+            // So sánh mật khẩu vừa nhập với dữ liệu từ CSDL
+            if (!BCrypt.Net.BCrypt.EnhancedVerify(taiKhoan.UserPass, record.MatKhau, pwdHashType))
+                return await Task.Run(() => Unauthorized(CommonMessages.AccountUnauthorized));
 
-                // Đăng nhập thành công, ghi lại các thông tin người dùng
-                claims.Add(new Claim("LoggedInAt", DateTime.Now.ToString()));
+            // Đăng nhập thành công, ghi lại các thông tin người dùng
+            claims.Add(new Claim("LoggedInAt", DateTime.Now.ToString()));
 
-                // Gán thông tin người dùng vào cookie
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            // Gán thông tin người dùng vào cookie
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Thiết lập thuộc tính
-                AuthenticationProperties authProperties = new AuthenticationProperties();
+            // Thiết lập thuộc tính
+            AuthenticationProperties authProperties = new AuthenticationProperties();
 
-                // Tạo phiên đăng nhập
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            // Tạo phiên đăng nhập
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                // Chuyển hướng trang về trang trước đó hoặc home
-                return await Task.Run(() => Ok(string.IsNullOrEmpty(taiKhoan.LastUrl) ? "/" : taiKhoan.LastUrl));
-            }
-            catch (Exception) { throw new Exception(CommonMessages.AccountUnauthorized); }
+            // Chuyển hướng trang về trang trước đó hoặc home
+            return await Task.Run(() => Ok(string.IsNullOrEmpty(taiKhoan.LastUrl) ? "/" : taiKhoan.LastUrl));
         }
 
         #endregion Private Methods

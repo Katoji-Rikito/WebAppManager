@@ -49,33 +49,9 @@
     <header>
         <nav id="navbarApp" class="navbar navbar-expand py-0 navbar-dark fixed-top d-flex justify-content-between">
             @* Menu *@
-            @* <div id="dropdownbtn_MenuApp"></div> *@
-            <div class="nav-item dropdown" data-bs-theme="dark">
-                <button id="dropdownbtn_MenuApp" type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-                    <i class="fa-solid fa-bars"></i> @ViewData["Title"]<span id="notifyText" />
-                </button>
-                <ul class="dropdown-menu overflow-auto">
-                    <li><h5 class="dropdown-header"><i class="fa-solid fa-house-chimney"></i> Trang chủ</h5></li>
-                    <li>
-                        <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-car-side"></i> Về trang chủ</a>
-                    </li>
-                    <li><h5 class="dropdown-header"><i class="fa-regular fa-compass"></i> Menu ứng dụng</h5></li>
-                    <li>
-                        <a class="dropdown-item" href="#"><i class="fa-solid fa-map-location-dot"></i> Menu con 1</a>
-                        <a class="dropdown-item" href="#"><i class="fa-solid fa-map-location-dot"></i> Menu con 2</a>
-                    </li>
-                </ul>
-            </div>
+            <div id="dropdownbtn_MenuApp"></div>
             @* Clock *@
-            @* <div id="dropdownbtn_DigitalClock"></div> *@
-            <div class="nav-item dropdown" data-bs-theme="dark">
-                <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-                    <i class="fa-regular fa-clock"></i> <span id="info_DigitalClock"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end overflow-auto">
-                    <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-door-open"></i> Đăng xuất</a></li>
-                </ul>
-            </div>
+            <div id="dropdownbtn_DigitalClock"></div>
         </nav>
     </header>
 

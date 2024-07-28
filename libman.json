@@ -16,7 +16,7 @@
 		},
 		{
 			"destination": "wwwroot/lib/jquery/",
-			"library": "jquery@4.0.0-beta.2"
+			"library": "jquery@3.7.1"
 		},
 		{
 			"destination": "wwwroot/lib/jquery-validate/",

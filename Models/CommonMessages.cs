@@ -12,6 +12,8 @@
 
         public static string RecordExisted = "Dữ liệu cần thêm đã tồn tại, không thể ghi thêm!";
 
+        public static string RecordNotFound = "Không tìm thấy dữ liệu / bản ghi!";
+
         public static string TransactionIsNull = "Không có transaction nào được tạo!";
 
         #endregion Public Fields

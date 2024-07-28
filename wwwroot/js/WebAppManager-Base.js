@@ -11,7 +11,6 @@ const requestController = new AbortController();
  * Thêm padding-top cho phần hiển thị nội dung
  */
 document.addEventListener("DOMContentLoaded", function () {
-
     // Điều chỉnh padding-top của nội dung chính
     const adjustMainPaddingTop = () =>
         $("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
@@ -34,20 +33,22 @@ moment.locale("vi");
 $(document).ready(() => $("#Layer_1")?.click());
 
 // MÀN HÌNH LOADING ---------------------------------------------------------------------------------------------------
-const appLoadingPanel = $("#appLoadingPanel").dxLoadPanel({
-    focusStateEnabled: true, // Chỉ định xem thành phần UI có thể được tập trung hay không
-    hideOnOutsideClick: true, // Ẩn nếu click vào vùng ngoài
-    hideOnParentScroll: true, // Ẩn nếu cuộn phần tử cha
-    hint: "Đang tải dữ liệu . . .", // Chỉ định văn bản cho gợi ý xuất hiện khi người dùng tạm dừng trên thành phần UI
-    hoverStateEnabled: true, // Chỉ định xem thành phần giao diện người dùng có thay đổi trạng thái hay không khi người dùng tạm dừng trên đó
-    indicatorSrc: "/content/images/loading.gif", // Nguồn thay cho hình ảnh mặc định
-    message: "Đang tải dữ liệu . . .",
-    position: { my: "center", at: "center", of: "#mainContent" }, // Vị trí hiển thị
-    shading: true, // Tạo bóng nền hay không
-    shadingColor: "rgba(0,0,0,0.25)", // Màu bóng nền
-    showIndicator: true, // Hiện ảnh loading
-    showPane: true, // Hiện bảng
-}).dxLoadPanel("instance");
+const appLoadingPanel = $("#appLoadingPanel")
+    .dxLoadPanel({
+        focusStateEnabled: true, // Chỉ định xem thành phần UI có thể được tập trung hay không
+        hideOnOutsideClick: true, // Ẩn nếu click vào vùng ngoài
+        hideOnParentScroll: true, // Ẩn nếu cuộn phần tử cha
+        hint: "Đang tải dữ liệu . . .", // Chỉ định văn bản cho gợi ý xuất hiện khi người dùng tạm dừng trên thành phần UI
+        hoverStateEnabled: true, // Chỉ định xem thành phần giao diện người dùng có thay đổi trạng thái hay không khi người dùng tạm dừng trên đó
+        indicatorSrc: "/content/images/loading.gif", // Nguồn thay cho hình ảnh mặc định
+        message: "Đang tải dữ liệu . . .",
+        position: { my: "center", at: "center", of: "#mainContent" }, // Vị trí hiển thị
+        shading: true, // Tạo bóng nền hay không
+        shadingColor: "rgba(0,0,0,0.25)", // Màu bóng nền
+        showIndicator: true, // Hiện ảnh loading
+        showPane: true, // Hiện bảng
+    })
+    .dxLoadPanel("instance");
 
 // CÁC HÀM HỖ TRỢ KIỂM TRA ---------------------------------------------------------------------------------------------------
 /**
@@ -84,8 +85,7 @@ function IsThisNullOrEmpty(value) {
  * @returns Chuỗi đã viết hoa chữ cái đầu tiên
  */
 function CapitalizeString(value) {
-    if (IsThisNullOrEmpty(value))
-        return value;
+    if (IsThisNullOrEmpty(value)) return value;
     return value?.charAt(0)?.toUpperCase() + value?.slice(1);
 }
 
@@ -102,20 +102,19 @@ function CallServer_GET(
     callURL = "",
     showNotify = false,
     actionSuccess = null,
-    actionFail = null
+    actionFail = null,
 ) {
     $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
     appLoadingPanel?.show();
-    return axios.get(callURL, { signal: requestController.signal })
+    return axios
+        .get(callURL, { signal: requestController.signal })
         .then((res) => {
             console.log("GET OK", res);
             // Thông báo kết quả trả về
-            if (showNotify)
-                DevExpress.ui.notify("Thành công", "success", 3000);
+            if (showNotify) DevExpress.ui.notify("Thành công", "success", 3000);
 
             // Chạy hàm truyền vào khi thành công (nếu có)
-            if (IsFunction(actionSuccess))
-                actionSuccess(res.data);
+            if (IsFunction(actionSuccess)) actionSuccess(res.data);
         })
         .catch((err) => {
             console.log("GET NG", err);
@@ -128,9 +127,9 @@ function CallServer_GET(
             DevExpress.ui.notify(message, "error", 3000);
 
             // Chạy hàm truyền vào khi thất bại (nếu có)
-            if (IsFunction(actionFail))
-                actionFail(err);
-        }).finally(function () {
+            if (IsFunction(actionFail)) actionFail(err);
+        })
+        .finally(function () {
             $("#notifyText")?.text("");
             appLoadingPanel?.hide();
         });
@@ -150,20 +149,27 @@ function CallServer_POST(
     showNotify = false,
     inputArgs = {},
     actionSuccess = null,
-    actionFail = null
+    actionFail = null,
 ) {
     $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
     appLoadingPanel?.show();
-    return axios.post(callURL, inputArgs, { headers: { "Content-Type": "application/json" }, signal: requestController.signal })
+    return axios
+        .post(callURL, inputArgs, {
+            headers: { "Content-Type": "application/json" },
+            signal: requestController.signal,
+        })
         .then((res) => {
             console.log("POST OK", res);
             // Thông báo kết quả trả về
             if (showNotify)
-                DevExpress.ui.notify(`(${res.status} ${res.statusText}) Thành công`, "success", 3000);
+                DevExpress.ui.notify(
+                    `(${res.status} ${res.statusText}) Thành công`,
+                    "success",
+                    3000,
+                );
 
             // Chạy hàm truyền vào khi thành công (nếu có)
-            if (IsFunction(actionSuccess))
-                actionSuccess(res.data);
+            if (IsFunction(actionSuccess)) actionSuccess(res.data);
         })
         .catch((err) => {
             console.log("POST NG", err);
@@ -176,9 +182,9 @@ function CallServer_POST(
             DevExpress.ui.notify(message, "error", 3000);
 
             // Chạy hàm truyền vào khi thất bại (nếu có)
-            if (IsFunction(actionFail))
-                actionFail(err);
-        }).finally(function () {
+            if (IsFunction(actionFail)) actionFail(err);
+        })
+        .finally(function () {
             $("#notifyText")?.text("");
             appLoadingPanel?.hide();
         });
@@ -186,38 +192,73 @@ function CallServer_POST(
 
 // THANH ĐIỀU HƯỚNG =================================================================================
 // NÚT MENU
-//const dropdownbtn_MenuApp = $("#dropdownbtn_MenuApp").dxDropDownButton({
-//    dataSource: [{
-//        icon: "home",
-//        text: "Trang chủ",
-//        onClick: (e) => window.location.replace("/"),
-//    }],
-//    disabled: !isUserLogedIn,
-//    hint: "Danh sách chức năng phần mềm",
-//    icon: "menu",
-//    noDataText: "Vô lý ???",
-//    stylingMode: "contained",
-//    text: navbar_Title,
-//    type: "normal",
-//}).dxDropDownButton("instance");
+const dropdownbtn_MenuApp = $("#dropdownbtn_MenuApp")
+    .dxDropDownButton({
+        dataSource: [
+            {
+                icon: "home",
+                text: "Trang chủ",
+                onClick: (e) => window.location.replace("/"),
+            },
+        ],
+        disabled: !isUserLogedIn,
+        dropDownOptions: {
+            dragEnabled: true,
+            dragOutsideBoundary: true,
+            enableBodyScroll: true,
+            height: "auto",
+            position: { my: "left top", at: "left bottom", of:"#dropdownbtn_MenuApp"},
+            resizeEnabled: true,
+            width: "auto",
+        },
+        hint: "Danh sách chức năng phần mềm, hiện tại đang ở " + navbar_Title,
+        icon: "menu",
+        noDataText: "Vô lý ???",
+        stylingMode: "contained",
+        text: navbar_Title,
+        type: "normal",
+        useItemTextAsTitle: false,
+    })
+    .dxDropDownButton("instance");
 
 // ĐỒNG HỒ VÀ NÚT ĐĂNG XUẤT
-//const dropdownbtn_DigitalClock = $("#dropdownbtn_DigitalClock").dxDropDownButton({
-//    dataSource: [{
-//        disabled: !isUserLogedIn,
-//        hint: "Đăng xuất phần mềm",
-//        icon: "runner",
-//        text: "Đăng xuất",
-//        onClick: (e) => CallServer_GET("/Account/Logout", false, () => window.location.replace("/Account/Index")),
-//    }],
-//    hint: "Đăng xuất phần mềm",
-//    icon: "clock",
-//    noDataText: "Vô lý ???",
-//    stylingMode: "contained",
-//    text: navbar_Title,
-//    type: "normal",
-//}).dxDropDownButton("instance");
+const dropdownbtn_DigitalClock = $("#dropdownbtn_DigitalClock")
+    .dxDropDownButton({
+        dataSource: [
+            {
+                disabled: !isUserLogedIn,
+                icon: "runner",
+                text: "Đăng xuất",
+                onClick: (e) =>
+                    CallServer_GET("/Account/Logout", false, () =>
+                        window.location.replace("/Account/Index"),
+                    ),
+            },
+        ],
+        dropDownOptions: {
+            dragEnabled: true,
+            dragOutsideBoundary: true,
+            enableBodyScroll: true,
+            height: "auto",
+            position: { my: "right top", at: "right bottom", of: "#dropdownbtn_DigitalClock" },
+            resizeEnabled: true,
+            width: "auto",
+        },
+        hint: "Đăng xuất phần mềm",
+        icon: "clock",
+        noDataText: "Vô lý ???",
+        stylingMode: "contained",
+        type: "normal",
+        useItemTextAsTitle: false,
+    })
+    .dxDropDownButton("instance");
 
 // HIỂN THỊ THỜI GIAN THỰC
-//setInterval(() => dropdownbtn_DigitalClock.option("text", CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A"))), 0);
-setInterval(() => $("#info_DigitalClock").text(CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A"))), 0);
+setInterval(
+    () =>
+        dropdownbtn_DigitalClock.option(
+            "text",
+            CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A")),
+        ),
+    0,
+);
