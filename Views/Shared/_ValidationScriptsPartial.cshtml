@@ -1,2 +1,10 @@
-﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+﻿@*
+Thêm vào view nào cần kiểm tra dữ liệu bằng cách dùng @section Scripts {@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}}
+Tuy nhiên, trong app này gần như không dùng tới.
+*@
+
+<!-- Jquery validate library -->
+<script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
+
+<!-- Jquery validation unobtrusive library -->
+<script type="text/javascript" src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>

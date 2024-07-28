@@ -2,7 +2,6 @@
 using System.Text;
 using System.Text.Json;
 using WebAppManager.Models;
-using WebAppManager.Models.DTOs;
 
 namespace WebAppManager.Controllers
 {
@@ -18,16 +17,21 @@ namespace WebAppManager.Controllers
         /// <summary>
         /// Cập nhật danh sách thành phố của OpenWeatherMap
         /// </summary>
-        /// <param name="listData">Danh sách thành phố</param>
-        /// <returns>Kết quả lưu</returns>
+        /// <param name="listData"> Danh sách thành phố </param>
+        /// <returns> Kết quả lưu </returns>
         [HttpPost]
         public async Task<IActionResult> UpdateOpenWeatherMapCityAsync([FromBody] List<OpenWeatherMapCityDto> listData)
         {
+            // Chuyển danh sách thành chuỗi JSON
             string contentFile = JsonSerializer.Serialize(listData);
-            await System.IO.File.WriteAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/content/openweathermap", "ListCity1.json"), contentFile, encoding: Encoding.UTF8);
 
+            // Ghi vào file
+            await System.IO.File.WriteAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/content/openweathermap", "ListCity.json"), contentFile, encoding: Encoding.UTF8);
+
+            // Trả kết quả ghi
             return await Task.Run(() => Created(string.Empty, listData));
         }
+
         #endregion Public Methods
     }
 }

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebAppManager.Models;
-using WebAppManager.Models.DTOs;
 using WebAppManager.Repositories.Interfaces;
 
 namespace WebAppManager.Controllers
@@ -27,7 +26,7 @@ namespace WebAppManager.Controllers
         /// <summary>
         /// View đăng nhập
         /// </summary>
-        /// <returns></returns>
+        /// <returns> </returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -59,7 +58,7 @@ namespace WebAppManager.Controllers
             if (!ModelState.IsValid || string.IsNullOrEmpty(taiKhoan.UserName) || string.IsNullOrEmpty(taiKhoan.UserPass))
                 return await Task.Run(() => BadRequest(CommonMessages.ParamsIsNullOrEmpty));
 
-            return await VerifyAccount(taiKhoan);
+            return await VerifyAccountAsync(taiKhoan);
         }
 
         #endregion Public Methods
@@ -75,7 +74,7 @@ namespace WebAppManager.Controllers
         /// <param name="userPass"> Mật khẩu đăng nhập </param>
         /// <returns> </returns>
         [Authorize]
-        private async Task<IActionResult> CreateOrUpdateAccount(ThongTinTaiKhoanDto taiKhoan)
+        private async Task<IActionResult> CreateOrUpdateAccountAsync(ThongTinTaiKhoanDto taiKhoan)
         {
             // Xử lý dữ liệu trước khi nấu
             if (!ModelState.IsValid || string.IsNullOrEmpty(taiKhoan.UserName) || string.IsNullOrEmpty(taiKhoan.UserPass))
@@ -119,7 +118,7 @@ namespace WebAppManager.Controllers
         /// </summary>
         /// <param name="taiKhoan"> Thông tin tài khoản đăng nhập </param>
         /// <returns> Kết quả kiểm tra: True nếu tài khoản hợp lệ </returns>
-        private async Task<IActionResult> VerifyAccount(ThongTinTaiKhoanDto taiKhoan)
+        private async Task<IActionResult> VerifyAccountAsync(ThongTinTaiKhoanDto taiKhoan)
         {
             // Tạo trước một số thông tin người dùng
             List<Claim> claims = new List<Claim>

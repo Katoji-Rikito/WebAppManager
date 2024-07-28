@@ -11,6 +11,7 @@ const requestController = new AbortController();
  * Thêm padding-top cho phần hiển thị nội dung
  */
 document.addEventListener("DOMContentLoaded", function () {
+
     // Điều chỉnh padding-top của nội dung chính
     const adjustMainPaddingTop = () =>
         $("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
@@ -110,21 +111,26 @@ function CallServer_GET(
         .get(callURL, { signal: requestController.signal })
         .then((res) => {
             console.log("GET OK", res);
+
             // Thông báo kết quả trả về
-            if (showNotify) DevExpress.ui.notify("Thành công", "success", 3000);
+            if (showNotify)
+                DevExpress.ui.notify(
+                    `(${res.status} ${res.statusText}) Thành công`,
+                    "success",
+                    3000,
+                );
 
             // Chạy hàm truyền vào khi thành công (nếu có)
             if (IsFunction(actionSuccess)) actionSuccess(res.data);
         })
         .catch((err) => {
             console.log("GET NG", err);
+
             // Thông báo lỗi
-            let message = `Thất bại (${err.response.status} ${err.response.statusText})`;
             if (err.response.data?.includes("<!DOCTYPE html>"))
                 $("#mainContent").html(err.response.data);
             else
-                message += ` với dữ liệu trả về: ${JSON.stringify(err.response.data)}`;
-            DevExpress.ui.notify(message, "error", 3000);
+                DevExpress.ui.notify(`(${err.response.status} ${err.response.statusText}) Thất bại với dữ liệu trả về: ${JSON.stringify(err.response.data)}`, "error", 3000);
 
             // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail)) actionFail(err);
@@ -160,6 +166,7 @@ function CallServer_POST(
         })
         .then((res) => {
             console.log("POST OK", res);
+
             // Thông báo kết quả trả về
             if (showNotify)
                 DevExpress.ui.notify(
@@ -173,13 +180,12 @@ function CallServer_POST(
         })
         .catch((err) => {
             console.log("POST NG", err);
+
             // Thông báo lỗi
-            let message = `Thất bại (${err.response.status} ${err.response.statusText})`;
             if (err.response.data?.includes("<!DOCTYPE html>"))
                 $("#mainContent").html(err.response.data);
             else
-                message += ` với dữ liệu trả về: ${JSON.stringify(err.response.data)}`;
-            DevExpress.ui.notify(message, "error", 3000);
+                DevExpress.ui.notify(`(${err.response.status} ${err.response.statusText}) Thất bại với dữ liệu trả về: ${JSON.stringify(err.response.data)}`, "error", 3000);
 
             // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail)) actionFail(err);
@@ -207,7 +213,7 @@ const dropdownbtn_MenuApp = $("#dropdownbtn_MenuApp")
             dragOutsideBoundary: true,
             enableBodyScroll: true,
             height: "auto",
-            position: { my: "left top", at: "left bottom", of:"#dropdownbtn_MenuApp"},
+            position: { my: "left top", at: "left bottom", of: "#dropdownbtn_MenuApp" },
             resizeEnabled: true,
             width: "auto",
         },
