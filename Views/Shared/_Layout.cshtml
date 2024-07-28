@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -37,29 +39,43 @@
     <environment exclude="Development">
         <script type="text/javascript" src="~/lib/devextreme-dist/js/dx.all.min.js" asp-append-version="true"></script>
     </environment>
+    <script>
+        const isUserLogedIn = @Html.Raw(JsonSerializer.Serialize(User.Identity?.IsAuthenticated)); // Kiểm tra người dùng đăng nhập hay chưa
+        const userName = @Html.Raw(JsonSerializer.Serialize(User.Identity?.Name)); // Lấy tên người dùng đăng nhập
+        const navbar_Title = @Html.Raw(JsonSerializer.Serialize(ViewData["Title"])); // Lấy tiêu đề view hiện tại
+    </script>
 </head>
 <body class="dx-viewport">
     <header>
-        <nav id="navbarApp" class="navbar navbar-expand py-0 navbar-dark bg-dark fixed-top justify-content-between">
+        <nav id="navbarApp" class="navbar navbar-expand py-0 navbar-dark fixed-top d-flex justify-content-between">
             @* Menu *@
-            <div class="nav-item dropdown">
-                <button id="MenuApp" type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-bars"></i> @ViewData["Title"]<span id="notifyText" />
+            @* <div id="dropdownbtn_MenuApp"></div> *@
+            <div class="nav-item dropdown" data-bs-theme="dark">
+                <button id="dropdownbtn_MenuApp" type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
+                    <i class="fa-solid fa-bars"></i> @ViewData["Title"]<span id="notifyText" />
                 </button>
-                <ul id="SubMenuApp" class="dropdown-menu bg-dark overflow-auto">
-                    <li><h5 class="dropdown-header"><i class="fa fa-home"></i> Trang chủ</h5></li>
+                <ul class="dropdown-menu overflow-auto">
+                    <li><h5 class="dropdown-header"><i class="fa-solid fa-house-chimney"></i> Trang chủ</h5></li>
                     <li>
-                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-car-side"></i> Về trang chủ</a>
-                        <a class="nav-link dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa fa-door-open"></i> Thoát tài khoản</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-car-side"></i> Về trang chủ</a>
                     </li>
-                    <li><h5 class="dropdown-header"><i class="fa fa-compass"></i> Menu ứng dụng</h5></li>
+                    <li><h5 class="dropdown-header"><i class="fa-regular fa-compass"></i> Menu ứng dụng</h5></li>
                     <li>
-                        <a class="nav-link dropdown-item" href="#"><i class="fa fa-map-location-dot"></i> Menu con 1</a>
-                        <a class="nav-link dropdown-item" href="#"><i class="fa fa-map-location-dot"></i> Menu con 2</a>
+                        <a class="dropdown-item" href="#"><i class="fa-solid fa-map-location-dot"></i> Menu con 1</a>
+                        <a class="dropdown-item" href="#"><i class="fa-solid fa-map-location-dot"></i> Menu con 2</a>
                     </li>
                 </ul>
             </div>
             @* Clock *@
-            <div class="nav-item"><i class="fa fa-clock"></i> <span id="digitalClock" /></div>
+            @* <div id="dropdownbtn_DigitalClock"></div> *@
+            <div class="nav-item dropdown" data-bs-theme="dark">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
+                    <i class="fa-regular fa-clock"></i> <span id="info_DigitalClock"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end overflow-auto">
+                    <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-door-open"></i> Đăng xuất</a></li>
+                </ul>
+            </div>
         </nav>
     </header>
 

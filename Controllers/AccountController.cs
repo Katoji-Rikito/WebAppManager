@@ -28,6 +28,7 @@ namespace WebAppManager.Controllers
         /// View đăng nhập
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return await Task.Run(View);
@@ -89,15 +90,14 @@ namespace WebAppManager.Controllers
             if (record is null)
             {
                 // Nếu chưa có tài khoản thì tạo mới
-                record = new DsTaikhoan
+                await _unitOfWork.GetRepository<DsTaikhoan>().CreateAsync(new DsTaikhoan
                 {
                     TenDangNhap = taiKhoan.UserName,
                     MatKhau = BCrypt.Net.BCrypt.EnhancedHashPassword(taiKhoan.UserPass, pwdHashType), // Tạo mật khẩu đã mã hoá cùng salt
                     HashSalt = BCrypt.Net.BCrypt.GenerateSalt(), // Không cần sử dụng nữa do thư viện tự lấy rồi. Thêm vào cho có thôi hoặc để lừa mấy thằng hắc cơ lỏd 🤣
                     IsAble = true,
                     UpdatedAt = DateTime.UtcNow,
-                };
-                await _unitOfWork.GetRepository<DsTaikhoan>().CreateAsync(record);
+                });
             }
             else
             {
@@ -119,12 +119,18 @@ namespace WebAppManager.Controllers
         /// <returns> Kết quả kiểm tra: True nếu tài khoản hợp lệ </returns>
         private async Task<IActionResult> VerifyAccount(ThongTinTaiKhoanDto taiKhoan)
         {
-            // Xử lý chuỗi thô
-            taiKhoan.UserName = taiKhoan.UserName.Trim().ToUpper();
-            taiKhoan.UserPass = taiKhoan.UserPass.Trim();
-
             try
             {
+                // Tạo trước một số thông tin người dùng
+                List<Claim> claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, taiKhoan.UserName),
+                };
+
+                // Xử lý chuỗi thô
+                taiKhoan.UserName = taiKhoan.UserName.Trim().ToUpper();
+                taiKhoan.UserPass = taiKhoan.UserPass.Trim();
+
                 // Lấy thông tin tài khoản trong CSDL
                 DsTaikhoan? record = await _unitOfWork.GetRepository<DsTaikhoan>().GetDataAsync(r => r.IsAble && r.TenDangNhap == taiKhoan.UserName);
                 if (record is null) throw new Exception();
@@ -132,12 +138,8 @@ namespace WebAppManager.Controllers
                 // So sánh mật khẩu vừa nhập với dữ liệu từ CSDL
                 if (!BCrypt.Net.BCrypt.EnhancedVerify(taiKhoan.UserPass, record.MatKhau, pwdHashType)) throw new Exception();
 
-                // Đăng nhập thành công Tạo các thông tin người dùng
-                List<Claim> claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, taiKhoan.UserName),
-                    new Claim("LoggedInAt", DateTime.Now.ToString()),
-                };
+                // Đăng nhập thành công, ghi lại các thông tin người dùng
+                claims.Add(new Claim("LoggedInAt", DateTime.Now.ToString()));
 
                 // Gán thông tin người dùng vào cookie
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

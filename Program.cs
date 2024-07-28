@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using WebAppManager.Filters;
 using WebAppManager.Models;
 using WebAppManager.Repositories;
@@ -25,6 +26,9 @@ builder.Services
     option.AccessDeniedPath = "/Account/AccessDenied";
     option.Cookie.Name = "WebAppManagerCookie";
 });
+
+// Thêm helper
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Thêm Scoped của GenericRepository
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -35,6 +35,7 @@ namespace WebAppManager.Filters
             context.ExceptionHandled = true;
             context.Result = new ViewResult
             {
+                StatusCode = StatusCodes.Status500InternalServerError,
                 ViewName = "Error",
                 ViewData = new ViewDataDictionary<ErrorViewModel>(new EmptyModelMetadataProvider(), context.ModelState)
                 {

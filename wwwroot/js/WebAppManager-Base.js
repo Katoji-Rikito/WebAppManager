@@ -108,7 +108,8 @@ function CallServer_GET(
     appLoadingPanel?.show();
     return axios.get(callURL, { signal: requestController.signal })
         .then((res) => {
-            console.log(res);
+            console.log("GET OK", res);
+            // Thông báo kết quả trả về
             if (showNotify)
                 DevExpress.ui.notify("Thành công", "success", 3000);
 
@@ -117,8 +118,14 @@ function CallServer_GET(
                 actionSuccess(res.data);
         })
         .catch((err) => {
-            console.log(err);
-            DevExpress.ui.notify(`Thất bại: ${err.response.status} ${err.response.statusText} - ${err.response.data}`, "error", 3000);
+            console.log("GET NG", err);
+            // Thông báo lỗi
+            let message = `Thất bại (${err.response.status} ${err.response.statusText})`;
+            if (err.response.data?.includes("<!DOCTYPE html>"))
+                $("#mainContent").html(err.response.data);
+            else
+                message += ` với dữ liệu trả về: ${JSON.stringify(err.response.data)}`;
+            DevExpress.ui.notify(message, "error", 3000);
 
             // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail))
@@ -149,7 +156,8 @@ function CallServer_POST(
     appLoadingPanel?.show();
     return axios.post(callURL, inputArgs, { headers: { "Content-Type": "application/json" }, signal: requestController.signal })
         .then((res) => {
-            console.log(res);
+            console.log("POST OK", res);
+            // Thông báo kết quả trả về
             if (showNotify)
                 DevExpress.ui.notify(`(${res.status} ${res.statusText}) Thành công`, "success", 3000);
 
@@ -158,8 +166,14 @@ function CallServer_POST(
                 actionSuccess(res.data);
         })
         .catch((err) => {
-            console.log(err);
-            DevExpress.ui.notify(`Thất bại (${err.response.status} ${err.response.statusText}) với dữ liệu trả về: ${JSON.stringify(err.response.data)}`, "error", 3000);
+            console.log("POST NG", err);
+            // Thông báo lỗi
+            let message = `Thất bại (${err.response.status} ${err.response.statusText})`;
+            if (err.response.data?.includes("<!DOCTYPE html>"))
+                $("#mainContent").html(err.response.data);
+            else
+                message += ` với dữ liệu trả về: ${JSON.stringify(err.response.data)}`;
+            DevExpress.ui.notify(message, "error", 3000);
 
             // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail))
@@ -172,6 +186,38 @@ function CallServer_POST(
 
 // THANH ĐIỀU HƯỚNG =================================================================================
 // NÚT MENU
+//const dropdownbtn_MenuApp = $("#dropdownbtn_MenuApp").dxDropDownButton({
+//    dataSource: [{
+//        icon: "home",
+//        text: "Trang chủ",
+//        onClick: (e) => window.location.replace("/"),
+//    }],
+//    disabled: !isUserLogedIn,
+//    hint: "Danh sách chức năng phần mềm",
+//    icon: "menu",
+//    noDataText: "Vô lý ???",
+//    stylingMode: "contained",
+//    text: navbar_Title,
+//    type: "normal",
+//}).dxDropDownButton("instance");
+
+// ĐỒNG HỒ VÀ NÚT ĐĂNG XUẤT
+//const dropdownbtn_DigitalClock = $("#dropdownbtn_DigitalClock").dxDropDownButton({
+//    dataSource: [{
+//        disabled: !isUserLogedIn,
+//        hint: "Đăng xuất phần mềm",
+//        icon: "runner",
+//        text: "Đăng xuất",
+//        onClick: (e) => CallServer_GET("/Account/Logout", false, () => window.location.replace("/Account/Index")),
+//    }],
+//    hint: "Đăng xuất phần mềm",
+//    icon: "clock",
+//    noDataText: "Vô lý ???",
+//    stylingMode: "contained",
+//    text: navbar_Title,
+//    type: "normal",
+//}).dxDropDownButton("instance");
 
 // HIỂN THỊ THỜI GIAN THỰC
-setInterval(() => $("#digitalClock")?.text(CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A"))), 500);
+//setInterval(() => dropdownbtn_DigitalClock.option("text", CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A"))), 0);
+setInterval(() => $("#info_DigitalClock").text(CapitalizeString(moment()?.format("dddd, DD/MM/YYYY HH:mm:ss A"))), 0);

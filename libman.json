@@ -12,11 +12,11 @@
 		{
 			"destination": "wwwroot/lib/devextreme-dist/",
 			//"library": "devextreme-dist@23.1.12-build-24189-0109"
-			"library": "devextreme-dist@24.1.4"
+			"library": "devextreme-dist@24.1.5-build-24202-1936"
 		},
 		{
 			"destination": "wwwroot/lib/jquery/",
-			"library": "jquery@3.7.1"
+			"library": "jquery@4.0.0-beta.2"
 		},
 		{
 			"destination": "wwwroot/lib/jquery-validate/",
