@@ -1,9 +1,5 @@
 ﻿namespace WebAppManager.Models
 {
-    public class AxiosRequestParamDto
-    {
-    }
-
     /// <summary>
     /// DTO cập nhật thông tin thành phố OpenWeatherMap
     /// </summary>

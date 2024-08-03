@@ -15,32 +15,19 @@ function ChangeTextMode(id) {
     }
 }
 
-/**
- * Đăng nhập tài khoản
- */
+/** Đăng nhập tài khoản */
 function TryLogin() {
     if (dxForm_Account.validate().isValid)
-        CallServer_POST(
-            "/Account/Login",
-            false,
-            {
-                UserName: dxForm_Account
-                    ?.getEditor("TenDangNhap")
-                    ?.option("value")
-                    ?.trim()
-                    ?.toUpperCase(),
-                UserPass: dxForm_Account?.getEditor("MatKhau")?.option("value")?.trim(),
-                LastUrl: new URLSearchParams(window?.location?.search)?.get(
-                    "ReturnUrl",
-                ), // Lấy đường dẫn trước khi trỏ về trang đăng nhập
-            },
-            (data) => {
-                window.location.replace(data);
-            },
-        );
+        CallToServer("POST", "/Account/Login", false, undefined, {
+            UserName: dxForm_Account?.getEditor("TenDangNhap")?.option("value")?.trim()?.toUpperCase(),
+            UserPass: dxForm_Account?.getEditor("MatKhau")?.option("value")?.trim(),
+            LastUrl: new URLSearchParams(window?.location?.search)?.get("ReturnUrl"), // Lấy đường dẫn trước khi trỏ về trang đăng nhập
+        }, (data) => {
+            window.location.replace(data);
+        });
 }
 
-// FORM ĐĂNG NHẬP ---------------------------------------------------------------------------------------------------
+/** Form đăng nhập */
 const dxForm_Account = $("#dxForm_Account")
     .dxForm({
         labelMode: "floating",
@@ -119,8 +106,6 @@ const dxForm_Account = $("#dxForm_Account")
                 },
             },
         ],
-        onEditorEnterKey: function (e) {
-            TryLogin();
-        },
+        onEditorEnterKey: function (e) { TryLogin(); },
     })
     .dxForm("instance");

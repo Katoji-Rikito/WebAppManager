@@ -20,7 +20,7 @@ fetch("../content/openweathermap/ListCity.json")
         });
 
         if (callIt)
-            CallServer_POST("/Home/UpdateOpenWeatherMapCity", true, listData, (data) => {
+            CallToServer("POST", "/Home/UpdateOpenWeatherMapCity", true, undefined, listData, (data) => {
                 console.log(data);
 
                 //fetch("../content/openweathermap/ListCity1.json").then((response) => response.json()).then((data) => console.log(data));

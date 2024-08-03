@@ -4,36 +4,31 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // KHAI BÁO CÁC BIẾN ---------------------------------------------------------------------------------------------------
+/** Điều khiển request, chủ yếu để abort() */
 const requestController = new AbortController();
 
 // CÁC THIẾT LẬP MẶC ĐỊNH ---------------------------------------------------------------------------------------------------
-/**
- * Thêm padding-top cho phần hiển thị nội dung
- */
+/** Thêm padding-top cho phần hiển thị nội dung */
 document.addEventListener("DOMContentLoaded", function () {
+    /** Điều chỉnh padding-top của nội dung chính */
+    const adjustMainPaddingTop = function () {
+        $("#mainContent")?.css("padding-top", $("#navbarApp")?.height() + "px");
+    }
 
-    // Điều chỉnh padding-top của nội dung chính
-    const adjustMainPaddingTop = () =>
-        $("#mainContent")?.css("padding-top", $("#navbarApp").height() + "px");
-
-    // Điều chỉnh padding-top khi tải trang
+    /** Điều chỉnh padding-top khi tải trang */
     adjustMainPaddingTop();
 
-    // Điều chỉnh padding-top khi cửa sổ thay đổi kích thước
+    /** Điều chỉnh padding-top khi cửa sổ thay đổi kích thước */
     window.addEventListener("resize", adjustMainPaddingTop);
 });
 
-/**
- * Thiết lập thời gian
- */
+/** Thiết lập thời gian */
 moment.locale("vi");
 
-/**
- * Loại bỏ thông báo bản quyền DevExtreme 24.1
- */
+/** Loại bỏ thông báo bản quyền DevExtreme 24.1+ */
 $(document).ready(() => $("#Layer_1")?.click());
 
-// MÀN HÌNH LOADING ---------------------------------------------------------------------------------------------------
+/** Màn hình tải trang */
 const appLoadingPanel = $("#appLoadingPanel")
     .dxLoadPanel({
         focusStateEnabled: true, // Chỉ định xem thành phần UI có thể được tập trung hay không
@@ -92,30 +87,40 @@ function CapitalizeString(value) {
 
 // CÁC HÀM HỖ TRỢ GỌI SERVER ---------------------------------------------------------------------------------------------------
 /**
- * Hàm lấy dữ liệu từ server
- * @param {string} callURL URL cần gọi, lưu ý bỏ đuôi Async
- * @param {boolean} showNotify Hiện thông báo không? True là hiện
- * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
- * @param {function} actionFail Hàm sẽ thực thi nếu thất bại
- * @returns Thực hiện lấy dữ liệu về server
+ * Gọi hoặc gửi dữ liệu về server
+ * @param {string} callMethod Phương thức HTTP: GET: Đọc, POST: Tạo, PUT: Cập nhật, DELETE: Xoá. Mặc định: "GET"
+ * @param {string} callURL URL cần gọi, lưu ý bỏ đuôi Async. Mặc định: ""
+ * @param {boolean} isShowNotify Hiện thông báo không? True là hiện. Mặc định: true
+ * @param {object} getArgs Tham số cần gửi về server theo method GET (nếu có). Mặc định: null
+ * @param {object} postArgs Tham số cần gửi về server theo method POST (nếu có). Mặc định: null
+ * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công. Mặc định: null
+ * @param {function} actionFail Hàm sẽ thực thi nếu thất bại. Mặc định: null
+ * @returns Trả về promise axios (?)
  */
-function CallServer_GET(
+function CallToServer(
+    callMethod = "GET",
     callURL = "",
-    showNotify = false,
+    isShowNotify = true,
+    getArgs = null,
+    postArgs = null,
     actionSuccess = null,
-    actionFail = null,
+    actionFail = null
 ) {
     $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
     appLoadingPanel?.show();
-    return axios
-        .get(callURL, { signal: requestController.signal })
+    return axios({
+        method: callMethod,
+        url: callURL,
+        params: getArgs, // Chỉ dùng với method GET
+        data: postArgs, // Chỉ dùng với method POST
+    })
         .then((res) => {
-            console.log("GET OK", res);
+            console.log("Thành công: ", res);
 
             // Thông báo kết quả trả về
-            if (showNotify)
+            if (isShowNotify)
                 DevExpress.ui.notify(
-                    `(${res.status} ${res.statusText}) Thành công`,
+                    `(${res.status} - ${res.statusText}) Thành công`,
                     "success",
                     3000,
                 );
@@ -124,68 +129,17 @@ function CallServer_GET(
             if (IsFunction(actionSuccess)) actionSuccess(res.data);
         })
         .catch((err) => {
-            console.log("GET NG", err);
+            console.log("Lỗi: ", err);
 
             // Thông báo lỗi
             if (err.response.data?.includes("<!DOCTYPE html>"))
                 $("#mainContent").html(err.response.data);
             else
-                DevExpress.ui.notify(`(${err.response.status} ${err.response.statusText}) Thất bại với dữ liệu trả về: ${JSON.stringify(err.response.data)}`, "error", 3000);
-
-            // Chạy hàm truyền vào khi thất bại (nếu có)
-            if (IsFunction(actionFail)) actionFail(err);
-        })
-        .finally(function () {
-            $("#notifyText")?.text("");
-            appLoadingPanel?.hide();
-        });
-}
-
-/**
- * Hàm gửi dữ liệu về server
- * @param {string} callURL URL cần gọi, lưu ý bỏ đuôi Async
- * @param {boolean} showNotify Hiện thông báo không? True là hiện
- * @param {object} inputArgs Tham số cần gửi về server
- * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công
- * @param {function} actionFail Hàm sẽ thực thi nếu thất bại
- * @returns Thực hiện gửi dữ liệu về server
- */
-function CallServer_POST(
-    callURL = "",
-    showNotify = false,
-    inputArgs = {},
-    actionSuccess = null,
-    actionFail = null,
-) {
-    $("#notifyText")?.text("(Đang tải dữ liệu . . .)");
-    appLoadingPanel?.show();
-    return axios
-        .post(callURL, inputArgs, {
-            headers: { "Content-Type": "application/json" },
-            signal: requestController.signal,
-        })
-        .then((res) => {
-            console.log("POST OK", res);
-
-            // Thông báo kết quả trả về
-            if (showNotify)
                 DevExpress.ui.notify(
-                    `(${res.status} ${res.statusText}) Thành công`,
-                    "success",
+                    `(${err.response.status} - ${err.response.statusText}) Thất bại với dữ liệu trả về: ${JSON.stringify(err.response.data)}`,
+                    "error",
                     3000,
                 );
-
-            // Chạy hàm truyền vào khi thành công (nếu có)
-            if (IsFunction(actionSuccess)) actionSuccess(res.data);
-        })
-        .catch((err) => {
-            console.log("POST NG", err);
-
-            // Thông báo lỗi
-            if (err.response.data?.includes("<!DOCTYPE html>"))
-                $("#mainContent").html(err.response.data);
-            else
-                DevExpress.ui.notify(`(${err.response.status} ${err.response.statusText}) Thất bại với dữ liệu trả về: ${JSON.stringify(err.response.data)}`, "error", 3000);
 
             // Chạy hàm truyền vào khi thất bại (nếu có)
             if (IsFunction(actionFail)) actionFail(err);
@@ -197,7 +151,7 @@ function CallServer_POST(
 }
 
 // THANH ĐIỀU HƯỚNG =================================================================================
-// NÚT MENU
+/** Nút menu */
 const dropdownbtn_MenuApp = $("#dropdownbtn_MenuApp")
     .dxDropDownButton({
         dataSource: [
@@ -227,7 +181,7 @@ const dropdownbtn_MenuApp = $("#dropdownbtn_MenuApp")
     })
     .dxDropDownButton("instance");
 
-// ĐỒNG HỒ VÀ NÚT ĐĂNG XUẤT
+/** Đồng hồ và nút đăng xuất */
 const dropdownbtn_DigitalClock = $("#dropdownbtn_DigitalClock")
     .dxDropDownButton({
         dataSource: [
@@ -235,10 +189,9 @@ const dropdownbtn_DigitalClock = $("#dropdownbtn_DigitalClock")
                 disabled: !isUserLogedIn,
                 icon: "runner",
                 text: "Đăng xuất",
-                onClick: (e) =>
-                    CallServer_GET("/Account/Logout", false, () =>
-                        window.location.replace("/Account/Index"),
-                    ),
+                onClick: function (e) {
+                    CallToServer("GET", "/Account/Logout", false, undefined, undefined, () => window.location.reload());
+                },
             },
         ],
         dropDownOptions: {
@@ -259,7 +212,7 @@ const dropdownbtn_DigitalClock = $("#dropdownbtn_DigitalClock")
     })
     .dxDropDownButton("instance");
 
-// HIỂN THỊ THỜI GIAN THỰC
+/** Hiển thị thời gian thực */
 setInterval(
     () =>
         dropdownbtn_DigitalClock.option(
