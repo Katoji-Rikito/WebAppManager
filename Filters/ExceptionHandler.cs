@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections;
 using System.Diagnostics;
+using System.Text;
 using WebAppManager.Models;
 
 namespace WebAppManager.Filters
@@ -16,22 +17,53 @@ namespace WebAppManager.Filters
 
         #endregion Private Fields
 
-        #region Public Constructors
+
+
+        #region Private Methods
+
+        /// <summary> Chuyển IDictionary sang IDictionary<string, object> </summary> <param name="data">Dữ liệu cần chuyển</param> <returns>IDictionary<string, object></returns>
+        private IDictionary<string, object> ConvertToGenericDictionary(IDictionary? data = null)
+        {
+            Dictionary<string, object> result = [];
+            if (data is null)
+            {
+                return result;
+            }
+
+            foreach (DictionaryEntry entry in data)
+            {
+                if (entry.Key is string key)
+                {
+                    result[key] = entry.Value ?? null!;
+                }
+            }
+            return result;
+        }
+
+        #endregion Private Methods
 
         public ExceptionHandler(ILogger<ExceptionHandler> logger)
         {
             _logger = logger;
         }
 
-        #endregion Public Constructors
-
-
-
-        #region Public Methods
-
         public void OnException(ExceptionContext context)
         {
-            _logger.LogError(context.Exception, "Lỗi " + context.Exception.Message);
+            try
+            {
+                _logger.LogError(context.Exception, $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss}] Lỗi {context.Exception.Message}");
+            }
+            catch (Exception)
+            {
+                // Ghi log vào file nếu ghi vào Event Log thất bại
+                string pathSave = Path.Combine(Directory.GetCurrentDirectory(), "WebAppManager_Logs");
+                if (!Directory.Exists(pathSave))
+                {
+                    _ = Directory.CreateDirectory(pathSave);
+                }
+
+                _ = File.AppendAllTextAsync(Path.Combine(pathSave, $"{DateTime.Now.Ticks}_Error.log"), $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss}] Lỗi {context.Exception.Message}: {context.Exception}", Encoding.UTF8);
+            }
             context.ExceptionHandled = true;
             context.Result = new ViewResult
             {
@@ -54,26 +86,5 @@ namespace WebAppManager.Filters
                 }
             };
         }
-
-        #endregion Public Methods
-
-
-
-        #region Private Methods
-
-        /// <summary> Chuyển IDictionary sang IDictionary<string, object> </summary> <param name="data">Dữ liệu cần chuyển</param> <returns>IDictionary<string, object></returns>
-        private IDictionary<string, object> ConvertToGenericDictionary(IDictionary? data = null)
-        {
-            var result = new Dictionary<string, object>();
-            if (data is null) return result;
-            foreach (DictionaryEntry entry in data)
-            {
-                if (entry.Key is string key)
-                    result[key] = entry.Value ?? null!;
-            }
-            return result;
-        }
-
-        #endregion Private Methods
     }
 }

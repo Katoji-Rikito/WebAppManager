@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using WebAppManager.Filters;
 using WebAppManager.Models;
 using WebAppManager.Repositories;
-using WebAppManager.Repositories.Interfaces;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

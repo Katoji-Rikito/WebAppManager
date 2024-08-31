@@ -1,14 +1,16 @@
 ﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAppManager.Models;
-using WebAppManager.Repositories.Interfaces;
+using WebAppManager.Repositories;
 
 namespace WebAppManager.Controllers
 {
     [Authorize]
-    public class BaseController<TController, TEntity> : Controller
-        where TController : BaseController<TController, TEntity>
+    public class BaseController<TController, TDbContext, TEntity> : Controller
+        where TController : BaseController<TController, TDbContext, TEntity>
+        where TDbContext : DbContext
         where TEntity : BaseEntities
     {
         #region Private Fields
@@ -31,7 +33,7 @@ namespace WebAppManager.Controllers
 
         public async Task<IActionResult> GetList(DataSourceLoadOptions loadOptions)
         {
-            IEnumerable<TEntity> listResult = await UnitOfWork.GetRepository<TEntity>().GetListAsync();
+            IEnumerable<TEntity> listResult = await UnitOfWork.GetRepository<TDbContext, TEntity>().GetListAsync() ?? Enumerable.Empty<TEntity>();
             return await Task.Run(() => Ok(DataSourceLoader.Load(listResult, loadOptions)));
         }
 

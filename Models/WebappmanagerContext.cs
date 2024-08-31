@@ -4,24 +4,8 @@ namespace WebAppManager.Models;
 
 public partial class WebappmanagerContext : DbContext
 {
-    public WebappmanagerContext()
-    {
-    }
-
-    public WebappmanagerContext(DbContextOptions<WebappmanagerContext> options)
-        : base(options)
-    {
-    }
-
-    public virtual DbSet<DmTagnhom> DmTagnhoms { get; set; }
-
-    public virtual DbSet<DsLichsuthaydoi> DsLichsuthaydois { get; set; }
-
-    public virtual DbSet<DsNguontien> DsNguontiens { get; set; }
-
-    public virtual DbSet<DsTaikhoan> DsTaikhoans { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -143,4 +127,21 @@ public partial class WebappmanagerContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public WebappmanagerContext()
+    {
+    }
+
+    public WebappmanagerContext(DbContextOptions<WebappmanagerContext> options)
+        : base(options)
+    {
+    }
+
+    public virtual DbSet<DmTagnhom> DmTagnhoms { get; set; }
+
+    public virtual DbSet<DsLichsuthaydoi> DsLichsuthaydois { get; set; }
+
+    public virtual DbSet<DsNguontien> DsNguontiens { get; set; }
+
+    public virtual DbSet<DsTaikhoan> DsTaikhoans { get; set; }
 }

@@ -1,56 +1,106 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using WebAppManager.Models;
-using WebAppManager.Repositories.Interfaces;
 
 namespace WebAppManager.Repositories
 {
-    public class UnitOfWork(WebappmanagerContext context) : IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
-        #region Private Fields
-
-        private readonly WebappmanagerContext _context = context;
-
-        private readonly Dictionary<Type, object> _repoDict = new Dictionary<Type, object>();
-
-        private IDbContextTransaction _transaction = null!;
-
-        private bool disposed = false;
-
-        #endregion Private Fields
-
-
-
         #region Public Methods
 
         /// <summary>
         /// Khởi tạo transaction
         /// </summary>
         /// <returns> </returns>
-        public async Task BeginTransactionAsync()
-        {
-            try { _transaction = await _context.Database.BeginTransactionAsync(); }
-            catch (Exception ex) { throw new Exception(ex.Message); }
-        }
+        public Task BeginTransactionAsync();
 
         /// <summary>
-        /// Commit thay đổi
+        /// Chốt kết quả thay đổi dữ liệu vào CSDL
         /// </summary>
         /// <returns> </returns>
-        /// <exception cref="Exception"> </exception>
-        public async Task CommitAsync()
+        public Task CommitAsync();
+
+        /// <summary>
+        /// Lấy repository cần xử lý
+        /// </summary>
+        /// <typeparam name="TEntity"> Entity cần xử lý </typeparam>
+        /// <returns> Repository của entity cần xử lý </returns>
+        public IGenericRepository<TEntity> GetRepository<TDbContext, TEntity>()
+            where TDbContext : DbContext
+            where TEntity : BaseEntities;
+
+        /// <summary>
+        /// Huỷ thay đổi dữ liệu
+        /// </summary>
+        /// <returns> </returns>
+        public Task RollbackAsync();
+
+        /// <summary>
+        /// Lưu tạm thời thay đổi dữ liệu
+        /// </summary>
+        /// <returns> Số thay đổi vừa ghi nhận </returns>
+        public Task<int> SaveChangesAsync();
+
+        #endregion Public Methods
+    }
+
+    public class UnitOfWork : IUnitOfWork
+    {
+        #region Private Fields
+
+        /// <summary>
+        /// Lưu trữ các DbContext
+        /// </summary>
+        private readonly Dictionary<Type, DbContext> _dbContextDict = [];
+
+        /// <summary>
+        /// Lưu trữ các repository
+        /// </summary>
+        private readonly Dictionary<Type, object> _repoDict = [];
+
+        /// <summary>
+        /// Khai báo đẻ lấy DbContext đã được Dependency Injection
+        /// </summary>
+        private readonly IServiceProvider _serviceProvider;
+
+        /// <summary>
+        /// Lưu trữ transaction
+        /// </summary>
+        private IDbContextTransaction _transaction = null!;
+
+        /// <summary>
+        /// Theo dõi trạng thái đã giải phóng tài nguyên hay chưa
+        /// </summary>
+        private bool disposedValue = false;
+
+        #endregion Private Fields
+
+
+
+        #region Private Destructors
+
+        /// <summary>
+        /// Nếu phương thức Dispose() không được gọi một cách thủ công, thì các tài nguyên không được quản lý vẫn sẽ được giải phóng khi đối tượng UnitOfWork bị hủy bởi bộ thu gom rác
+        /// </summary>
+        ~UnitOfWork()
+        {
+            // Không thay đổi mã này. Đặt mã dọn dẹp trong phương thức 'Dispose(bool disposing)'
+            Dispose(disposing: false);
+        }
+
+        #endregion Private Destructors
+
+
+
+        #region Private Methods
+
+        /// <summary>
+        /// Ngắt kết nối với CSDL
+        /// </summary>
+        /// <returns> </returns>
+        private async Task DisposeAsync()
         {
             try
-            {
-                if (_transaction is null) throw new Exception(CommonMessages.TransactionIsNull);
-                await _transaction.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                if (_transaction is not null)
-                    await _transaction.RollbackAsync();
-                throw new Exception(ex.Message);
-            }
-            finally
             {
                 if (_transaction is not null)
                 {
@@ -58,6 +108,76 @@ namespace WebAppManager.Repositories
                     _transaction = null!;
                 }
             }
+            catch (Exception) { throw; }
+        }
+
+        #endregion Private Methods
+
+        /// <summary>
+        /// Huỷ kết nối CSDL
+        /// </summary>
+        /// <param name="disposing"> Phương thức huỷ được gọi hay không? True là đươc gọi </param>
+        protected virtual void Dispose(bool disposing)
+        {
+            try
+            {
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // TODO: dispose managed state (managed objects)
+                        foreach (DbContext dbContext in _dbContextDict.Values)
+                        {
+                            dbContext.Dispose();
+                        }
+                        _dbContextDict.Clear();
+                    }
+
+                    // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                    // TODO: set large fields to null
+                    disposedValue = true;
+                }
+            }
+            catch (Exception) { throw; }
+        }
+
+        public UnitOfWork(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public async Task BeginTransactionAsync()
+        {
+            try
+            {
+                foreach (DbContext dbContext in _dbContextDict.Values)
+                {
+                    if (dbContext.Database.CurrentTransaction is null)
+                    {
+                        _transaction = await dbContext.Database.BeginTransactionAsync();
+                    }
+                }
+            }
+            catch (Exception) { throw; }
+        }
+
+        public async Task CommitAsync()
+        {
+            try
+            {
+                if (_transaction is null)
+                {
+                    throw new Exception(CommonMessages.TransactionIsNull);
+                }
+
+                await _transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await RollbackAsync();
+                throw;
+            }
+            finally { await DisposeAsync(); }
         }
 
         /// <summary>
@@ -67,82 +187,81 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                Dispose(true);
+                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+                Dispose(disposing: true);
                 GC.SuppressFinalize(this);
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception) { throw; }
         }
 
-        /// <summary>
-        /// Lấy repository cần xử lý
-        /// </summary>
-        /// <typeparam name="TEntity"> Entity cần xử lý </typeparam>
-        /// <returns> Repository của entity cần xử lý </returns>
-        public IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntities
+        public TDbContext GetDbContext<TDbContext>() where TDbContext : DbContext
+        {
+            try
+            {
+                if (_dbContextDict.ContainsKey(typeof(TDbContext)))
+                {
+                    TDbContext? dbContextFromDict = _dbContextDict[typeof(TDbContext)] as TDbContext;
+                    if (dbContextFromDict is not null)
+                    {
+                        return dbContextFromDict;
+                    }
+                }
+
+                TDbContext dbContext = _serviceProvider.GetRequiredService<TDbContext>();
+                _dbContextDict.Add(typeof(TDbContext), dbContext);
+                return dbContext;
+            }
+            catch (Exception) { throw; }
+        }
+
+        public IGenericRepository<TEntity> GetRepository<TDbContext, TEntity>()
+            where TDbContext : DbContext
+            where TEntity : BaseEntities
         {
             try
             {
                 if (_repoDict.ContainsKey(typeof(TEntity)))
                 {
-                    var repoDict = _repoDict[typeof(TEntity)] as IGenericRepository<TEntity>;
+                    IGenericRepository<TEntity>? repoDict = _repoDict[typeof(TEntity)] as IGenericRepository<TEntity>;
                     if (repoDict is not null)
+                    {
                         return repoDict;
+                    }
                 }
 
-                var repo = new GenericRepository<TEntity>(_context);
+                TDbContext dbContext = GetDbContext<TDbContext>();
+                GenericRepository< TEntity> repo = new(dbContext);
                 _repoDict.Add(typeof(TEntity), repo);
                 return repo;
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception) { throw; }
         }
 
-        /// <summary>
-        /// Huỷ thay đổi dữ liệu
-        /// </summary>
-        /// <returns> </returns>
         public async Task RollbackAsync()
         {
             try
             {
-                if (_transaction is null) throw new Exception(CommonMessages.TransactionIsNull);
-                await _transaction.RollbackAsync();
-                await _transaction.DisposeAsync();
+                if (_transaction is not null)
+                {
+                    await _transaction.RollbackAsync();
+                }
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
-            finally { if (_transaction is not null) _transaction = null!; }
+            catch (Exception) { throw; }
+            finally { await DisposeAsync(); }
         }
 
-        /// <summary>
-        /// Lưu toàn bộ thay đổi dữ liệu
-        /// </summary>
-        /// <returns> Số dòng được lưu vào CSDL </returns>
         public async Task<int> SaveChangesAsync()
-        {
-            try { return await _context.SaveChangesAsync(); }
-            catch (Exception ex) { throw new Exception(ex.Message); }
-        }
-
-        #endregion Public Methods
-
-
-
-        #region Protected Methods
-
-        /// <summary>
-        /// Huỷ kết nối CSDL (?)
-        /// </summary>
-        /// <param name="disposing"> Huỷ hay không (?) </param>
-        /// <returns> </returns>
-        protected virtual void Dispose(bool disposing)
         {
             try
             {
-                if (!this.disposed && disposing) _context.Dispose();
-                this.disposed = true;
+                int totalChanges = 0;
+                foreach (DbContext dbContext in _dbContextDict.Values)
+                {
+                    totalChanges += await dbContext.SaveChangesAsync();
+                }
+                return totalChanges;
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception) { throw; }
         }
-
-        #endregion Protected Methods
     }
 }
