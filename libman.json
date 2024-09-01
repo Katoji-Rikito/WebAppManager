@@ -3,7 +3,7 @@
 	"libraries": [
 		{
 			"destination": "wwwroot/lib/axios/",
-			"library": "axios@1.7.2"
+			"library": "axios@1.7.7"
 		},
 		{
 			"destination": "wwwroot/lib/bootstrap/",
@@ -12,7 +12,7 @@
 		{
 			"destination": "wwwroot/lib/devextreme-dist/",
 			//"library": "devextreme-dist@23.1.12-build-24189-0109"
-			"library": "devextreme-dist@24.1.5-build-24202-1936"
+			"library": "devextreme-dist@24.1.6-build-24237-1936"
 		},
 		{
 			"destination": "wwwroot/lib/jquery/",

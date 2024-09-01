@@ -6,14 +6,16 @@ using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using WebAppManager.Models;
+using WebAppManager.Repositories;
 
 namespace WebAppManager.Filters
 {
-    public class ExceptionHandler : IExceptionFilter
+    public class ExceptionHandler : IAsyncExceptionFilter
     {
         #region Private Fields
 
         private readonly ILogger<ExceptionHandler> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         #endregion Private Fields
 
@@ -21,7 +23,11 @@ namespace WebAppManager.Filters
 
         #region Private Methods
 
-        /// <summary> Chuyển IDictionary sang IDictionary<string, object> </summary> <param name="data">Dữ liệu cần chuyển</param> <returns>IDictionary<string, object></returns>
+        /// <summary>
+        /// Chuyển IDictionary sang IDictionary<string, object>
+        /// </summary>
+        /// <param name="data">Dữ liệu cần chuyển</param>
+        /// <returns>IDictionary</returns>
         private IDictionary<string, object> ConvertToGenericDictionary(IDictionary? data = null)
         {
             Dictionary<string, object> result = [];
@@ -42,28 +48,33 @@ namespace WebAppManager.Filters
 
         #endregion Private Methods
 
-        public ExceptionHandler(ILogger<ExceptionHandler> logger)
+        public ExceptionHandler(ILogger<ExceptionHandler> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
-        public void OnException(ExceptionContext context)
+        public async Task OnExceptionAsync(ExceptionContext? context = null)
         {
-            try
-            {
-                _logger.LogError(context.Exception, $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss}] Lỗi {context.Exception.Message}");
-            }
-            catch (Exception)
-            {
-                // Ghi log vào file nếu ghi vào Event Log thất bại
-                string pathSave = Path.Combine(Directory.GetCurrentDirectory(), "WebAppManager_Logs");
-                if (!Directory.Exists(pathSave))
-                {
-                    _ = Directory.CreateDirectory(pathSave);
-                }
+            // Huỷ thay đổi dữ liệu trước
+            await _unitOfWork.RollbackAsync();
 
-                _ = File.AppendAllTextAsync(Path.Combine(pathSave, $"{DateTime.Now.Ticks}_Error.log"), $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss}] Lỗi {context.Exception.Message}: {context.Exception}", Encoding.UTF8);
+            // Kiểm tra thư mục chứa lỗi có tồn tại không
+            // Nếu chưa thì tạo mới
+            string pathSave = Path.Combine(Directory.GetCurrentDirectory(), "WebAppManager_ErrorReports");
+            if (!Directory.Exists(pathSave))
+            {
+                _ = Directory.CreateDirectory(pathSave);
             }
+
+            if (context is null)
+            {
+                return;
+            }
+
+            // Ghi lỗi vào file log
+            await File.AppendAllTextAsync(Path.Combine(pathSave, $"{DateTime.Now.Ticks}_Error.log"), $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss}] Lỗi {context.Exception.Message}: {context.Exception}", Encoding.UTF8);
+
             context.ExceptionHandled = true;
             context.Result = new ViewResult
             {

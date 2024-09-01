@@ -1,4 +1,6 @@
-﻿namespace WebAppManager.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebAppManager.Models
 {
     /// <summary>
     /// DTO cập nhật thông tin thành phố OpenWeatherMap
@@ -45,6 +47,15 @@
     /// </summary>
     public class ThongTinTaiKhoanDto
     {
+        /// <summary>
+        /// Lưu trữ tạm tên đăng nhập
+        /// </summary>
+        private string? _userName;
+        /// <summary>
+        /// Lưu trữ tạm mật khẩu đăng nhập
+        /// </summary>
+        private string? _userPass;
+
         #region Public Properties
 
         /// <summary>
@@ -55,12 +66,22 @@
         /// <summary>
         /// Tên tài khoản
         /// </summary>
-        public string UserName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
+        public string UserName
+        {
+            get => _userName ?? null!;
+            set => _userName = string.IsNullOrEmpty(value?.Trim()) ? null : value?.Trim();
+        }
 
         /// <summary>
         /// Mật khẩu đăng nhập
         /// </summary>
-        public string UserPass { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
+        public string UserPass
+        {
+            get => _userPass ?? null!;
+            set => _userPass = string.IsNullOrEmpty(value?.Trim()) ? null : value?.Trim();
+        }
 
         #endregion Public Properties
     }

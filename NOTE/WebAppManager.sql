@@ -16,12 +16,10 @@
 
 
 -- Dumping database structure for webappmanager
-DROP DATABASE IF EXISTS `webappmanager`;
-CREATE DATABASE IF NOT EXISTS `webappmanager` /*!40100 DEFAULT CHARACTER SET utf32 COLLATE utf32_vietnamese_ci */;
+CREATE DATABASE IF NOT EXISTS `webappmanager` /*!40100 DEFAULT CHARACTER SET utf32 COLLATE utf32_unicode_ci */;
 USE `webappmanager`;
 
 -- Dumping structure for table webappmanager.dm_tagnhom
-DROP TABLE IF EXISTS `dm_tagnhom`;
 CREATE TABLE IF NOT EXISTS `dm_tagnhom` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenTagNhom` text NOT NULL,
@@ -30,12 +28,11 @@ CREATE TABLE IF NOT EXISTS `dm_tagnhom` (
   `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Thời gian cập nhật dữ liệu',
   PRIMARY KEY (`ID`) USING BTREE,
   UNIQUE KEY `TenTagNhom` (`TenTagNhom`) USING HASH
-) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci COMMENT='Danh mục các tag, nhóm chung cho nhiều bảng';
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci COMMENT='Danh mục các tag, nhóm chung cho nhiều bảng';
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table webappmanager.ds_lichsuthaydoi
-DROP TABLE IF EXISTS `ds_lichsuthaydoi`;
 CREATE TABLE IF NOT EXISTS `ds_lichsuthaydoi` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `LoaiThayDoi` tinytext NOT NULL,
@@ -47,12 +44,11 @@ CREATE TABLE IF NOT EXISTS `ds_lichsuthaydoi` (
   `IsAble` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Hết hiệu lực: 0, có hiệu lực: 1',
   `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Thời gian cập nhật dữ liệu',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci COMMENT='Danh sách lịch sử thay đổi cơ sở dữ liệu';
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci COMMENT='Danh sách lịch sử thay đổi cơ sở dữ liệu';
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table webappmanager.ds_nguontien
-DROP TABLE IF EXISTS `ds_nguontien`;
 CREATE TABLE IF NOT EXISTS `ds_nguontien` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `IdNhomTien` bigint(20) unsigned NOT NULL,
@@ -65,12 +61,11 @@ CREATE TABLE IF NOT EXISTS `ds_nguontien` (
   UNIQUE KEY `TenNguonTien` (`TenNguonTien`) USING HASH,
   KEY `FK_DsNguonTien_DmTagNhom` (`IdNhomTien`),
   CONSTRAINT `FK_DsNguonTien_DmTagNhom` FOREIGN KEY (`IdNhomTien`) REFERENCES `dm_tagnhom` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci COMMENT='Danh sách nguồn tiền';
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci COMMENT='Danh sách nguồn tiền';
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table webappmanager.ds_taikhoan
-DROP TABLE IF EXISTS `ds_taikhoan`;
 CREATE TABLE IF NOT EXISTS `ds_taikhoan` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `TenDangNhap` tinytext NOT NULL,
@@ -80,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `ds_taikhoan` (
   `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Thời gian cập nhật dữ liệu',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `TenDangNhap` (`TenDangNhap`) USING HASH
-) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_vietnamese_ci COMMENT='Danh sách tài khoản dùng để đăng nhập ứng dụng';
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci COMMENT='Danh sách tài khoản dùng để đăng nhập ứng dụng';
 
 -- Data exporting was unselected.
 

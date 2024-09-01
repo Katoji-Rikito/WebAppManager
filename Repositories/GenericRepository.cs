@@ -9,6 +9,13 @@ namespace WebAppManager.Repositories
         #region Public Methods
 
         /// <summary>
+        /// Đếm số lượng bản ghi theo điều kiện truyền vào
+        /// </summary>
+        /// <param name="filter"> Điều kiện để lấy dữ liệu </param>
+        /// <returns> Số lượng bản ghi thoả mãn điều kiện </returns>
+        public Task<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null);
+
+        /// <summary>
         /// Tạo 1 dòng dữ liệu
         /// </summary>
         /// <param name="entityData"> Dữ liệu cần tạo </param>
@@ -58,11 +65,11 @@ namespace WebAppManager.Repositories
         public Task<TEntity?> GetDataAsync(Expression<Func<TEntity, bool>>? filter = null);
 
         /// <summary>
-        /// Lấy 1 dòng dữ liệu theo ID
+        /// Lấy 1 dòng dữ liệu theo khoá (key)
         /// </summary>
-        /// <param name="id"> ID dòng cần lấy </param>
-        /// <returns> Dữ liệu của ID vừa truyền vào </returns>
-        public Task<TEntity?> GetDataByIdAsync(int id = -1);
+        /// <param name="keys"> Các khoá (key) của dòng cần lấy </param>
+        /// <returns> Bản ghi thoả mãn khoá (key) vừa truyền vào </returns>
+        public Task<TEntity?> GetDataByKeysAsync(object[]? keys = null);
 
         /// <summary>
         /// Lấy 1 dòng dữ liệu theo câu truy vấn
@@ -90,7 +97,7 @@ namespace WebAppManager.Repositories
         /// </summary>
         /// <param name="filter"> Điều kiện cần kiểm tra </param>
         /// <returns> True nếu đã tồn tại </returns>
-        public Task<bool> IsRecordExists(Expression<Func<TEntity, bool>>? filter = null);
+        public Task<bool> IsRecordExistAsync(Expression<Func<TEntity, bool>>? filter = null);
 
         /// <summary>
         /// Cập nhật 1 dòng dữ liệu
@@ -133,6 +140,15 @@ namespace WebAppManager.Repositories
 
 
         #region Public Methods
+
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null)
+        {
+            try
+            {
+                return filter is not null ? await _dbSetEntity.CountAsync(filter) : throw new ArgumentNullException(nameof(filter));
+            }
+            catch (Exception) { throw; }
+        }
 
         public async Task<TEntity> CreateAsync(TEntity? entityData = null)
         {
@@ -251,9 +267,9 @@ namespace WebAppManager.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task<TEntity?> GetDataByIdAsync(int id = -1)
+        public async Task<TEntity?> GetDataByKeysAsync(object[]? keys = null)
         {
-            try { return await _dbSetEntity.FindAsync(id); }
+            try { return await _dbSetEntity.FindAsync(keys ??= new object[] { 1 }); }
             catch (Exception) { throw; }
         }
 
@@ -284,7 +300,7 @@ namespace WebAppManager.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task<bool> IsRecordExists(Expression<Func<TEntity, bool>>? filter = null)
+        public async Task<bool> IsRecordExistAsync(Expression<Func<TEntity, bool>>? filter = null)
         {
             try
             {

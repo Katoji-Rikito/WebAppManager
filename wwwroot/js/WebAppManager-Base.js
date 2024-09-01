@@ -91,8 +91,8 @@ function CapitalizeString(value) {
  * @param {string} callMethod Phương thức HTTP: GET: Đọc, POST: Tạo, PUT: Cập nhật, DELETE: Xoá. Mặc định: "GET"
  * @param {string} callURL URL cần gọi, lưu ý bỏ đuôi Async. Mặc định: ""
  * @param {boolean} isShowNotify Hiện thông báo không? True là hiện. Mặc định: true
- * @param {object} getArgs Tham số cần gửi về server theo method GET (nếu có). Mặc định: null
- * @param {object} postArgs Tham số cần gửi về server theo method POST (nếu có). Mặc định: null
+ * @param {object} getArgs Tham số cần gửi về server theo method GET (nếu có). Mặc định: {}
+ * @param {object} postArgs Tham số cần gửi về server theo method POST (nếu có). Mặc định: {}
  * @param {function} actionSuccess Hàm sẽ thực thi nếu thành công. Mặc định: null
  * @param {function} actionFail Hàm sẽ thực thi nếu thất bại. Mặc định: null
  * @returns Trả về promise axios (?)
@@ -101,8 +101,9 @@ function CallToServer(
     callMethod = "GET",
     callURL = "",
     isShowNotify = true,
-    getArgs = null,
-    postArgs = null,
+    msgNotify = "Thành công!",
+    getArgs = {},
+    postArgs = {},
     actionSuccess = null,
     actionFail = null
 ) {
@@ -120,7 +121,7 @@ function CallToServer(
             // Thông báo kết quả trả về
             if (isShowNotify)
                 DevExpress.ui.notify(
-                    `(${res.status} - ${res.statusText}) Thành công`,
+                    `(${ res.status } - ${ res.statusText }) ${msgNotify}`,
                     "success",
                     3000,
                 );
@@ -136,7 +137,7 @@ function CallToServer(
                 $("#mainContent").html(err.response.data);
             else
                 DevExpress.ui.notify(
-                    `(${err.response.status} - ${err.response.statusText}) Thất bại với dữ liệu trả về: ${JSON.stringify(err.response.data)}`,
+                    `(${err.response.status} - ${err.response.statusText}) Thất bại: ${JSON.stringify(err.response.data)}`,
                     "error",
                     3000,
                 );
@@ -190,7 +191,7 @@ const dropdownbtn_DigitalClock = $("#dropdownbtn_DigitalClock")
                 icon: "runner",
                 text: "Đăng xuất",
                 onClick: function (e) {
-                    CallToServer("GET", "/Account/Logout", false, undefined, undefined, () => window.location.reload());
+                    CallToServer("GET", "/Account/Logout", false, undefined,undefined, undefined, () => window.location.reload());
                 },
             },
         ],

@@ -66,7 +66,7 @@ namespace WebAppManager.Repositories
         /// <summary>
         /// Lưu trữ transaction
         /// </summary>
-        private IDbContextTransaction _transaction = null!;
+        private readonly Dictionary<DbContext, IDbContextTransaction> _transaction = [];
 
         /// <summary>
         /// Theo dõi trạng thái đã giải phóng tài nguyên hay chưa
@@ -102,11 +102,36 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                if (_transaction is not null)
+                foreach (IDbContextTransaction transaction in _transaction.Values)
                 {
-                    await _transaction.DisposeAsync();
-                    _transaction = null!;
+                    await transaction.DisposeAsync();
                 }
+                _transaction.Clear();
+            }
+            catch (Exception) { throw; }
+        }
+
+        /// <summary>
+        /// Lấy DbContext cần xử lý
+        /// </summary>
+        /// <typeparam name="TDbContext"> DbContext cần xử lý </typeparam>
+        /// <returns> DbContext cần xử lý </returns>
+        private TDbContext GetDbContext<TDbContext>() where TDbContext : DbContext
+        {
+            try
+            {
+                if (_dbContextDict.ContainsKey(typeof(TDbContext)))
+                {
+                    TDbContext? dbContextFromDict = _dbContextDict[typeof(TDbContext)] as TDbContext;
+                    if (dbContextFromDict is not null)
+                    {
+                        return dbContextFromDict;
+                    }
+                }
+
+                TDbContext dbContext = _serviceProvider.GetRequiredService<TDbContext>();
+                _dbContextDict.Add(typeof(TDbContext), dbContext);
+                return dbContext;
             }
             catch (Exception) { throw; }
         }
@@ -154,7 +179,7 @@ namespace WebAppManager.Repositories
                 {
                     if (dbContext.Database.CurrentTransaction is null)
                     {
-                        _transaction = await dbContext.Database.BeginTransactionAsync();
+                        _transaction[dbContext] = await dbContext.Database.BeginTransactionAsync();
                     }
                 }
             }
@@ -165,12 +190,10 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                if (_transaction is null)
+                foreach (IDbContextTransaction transaction in _transaction.Values)
                 {
-                    throw new Exception(CommonMessages.TransactionIsNull);
+                    await transaction.CommitAsync();
                 }
-
-                await _transaction.CommitAsync();
             }
             catch (Exception)
             {
@@ -190,26 +213,6 @@ namespace WebAppManager.Repositories
                 // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
                 Dispose(disposing: true);
                 GC.SuppressFinalize(this);
-            }
-            catch (Exception) { throw; }
-        }
-
-        public TDbContext GetDbContext<TDbContext>() where TDbContext : DbContext
-        {
-            try
-            {
-                if (_dbContextDict.ContainsKey(typeof(TDbContext)))
-                {
-                    TDbContext? dbContextFromDict = _dbContextDict[typeof(TDbContext)] as TDbContext;
-                    if (dbContextFromDict is not null)
-                    {
-                        return dbContextFromDict;
-                    }
-                }
-
-                TDbContext dbContext = _serviceProvider.GetRequiredService<TDbContext>();
-                _dbContextDict.Add(typeof(TDbContext), dbContext);
-                return dbContext;
             }
             catch (Exception) { throw; }
         }
@@ -241,9 +244,9 @@ namespace WebAppManager.Repositories
         {
             try
             {
-                if (_transaction is not null)
+                foreach (IDbContextTransaction transaction in _transaction.Values)
                 {
-                    await _transaction.RollbackAsync();
+                    await transaction.RollbackAsync();
                 }
             }
             catch (Exception) { throw; }

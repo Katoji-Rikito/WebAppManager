@@ -11,7 +11,8 @@ fetch("../content/openweathermap/ListCity.json")
         let callIt = false;
         debugger;
         listData.forEach((record) => {
-            if (record.hasOwnProperty("coord")) {
+            if (record.hasOwnProperty("coord"))
+            {
                 callIt = true;
                 record.lon = record.coord?.lon;
                 record.lat = record.coord?.lat;
@@ -20,7 +21,7 @@ fetch("../content/openweathermap/ListCity.json")
         });
 
         if (callIt)
-            CallToServer("POST", "/Home/UpdateOpenWeatherMapCity", true, undefined, listData, (data) => {
+            CallToServer("POST", "/Home/UpdateOpenWeatherMapCity", true, undefined, undefined, listData, (data) => {
                 console.log(data);
 
                 //fetch("../content/openweathermap/ListCity1.json").then((response) => response.json()).then((data) => console.log(data));

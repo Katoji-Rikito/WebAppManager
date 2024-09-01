@@ -40,11 +40,9 @@ builder.Services.AddDbContext<WebappmanagerContext>(options => options.UseMySql(
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    _ = app.UseExceptionHandler("/Home/Error");
-}
+if (!app.Environment.IsDevelopment()) { }
 
+app.UseExceptionHandler("/Home/Error");
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
