@@ -5,7 +5,7 @@ using WebAppManager.Models;
 
 namespace WebAppManager.Controllers
 {
-    public class HomeController : BaseController<HomeController, WebappmanagerContext, DsNguontien>
+    public class HomeController : BaseController
     {
         #region Public Methods
 
